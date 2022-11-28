@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.modifyCustomerController">
+   <children>
+      <VBox prefHeight="401.0" prefWidth="125.0" style="-fx-background-color: #D4F1F4;">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule Pro">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="15.0" />
+               </VBox.margin>
+            </Text>
+            <Button fx:id="customersButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionCustomersScreen" prefWidth="175.0" style="-fx-background-color: #189AB4;" text="Customers" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="appointmentsButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionAppointmentsScreen" prefWidth="175.0" style="-fx-background-color: #189AB4;" text="Appointments" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="reportsButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionReportsScreen" prefWidth="175.0" style="-fx-background-color: #189AB4;" text="Reports" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#onActionLogout" prefWidth="175.0" style="-fx-background-color: #05445E;" text="LOGOUT" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="280.0" />
+               </VBox.margin>
+            </Button>
+         </children></VBox>
+      <Text layoutX="212.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modify Customer">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <GridPane layoutX="151.0" layoutY="67.0" prefHeight="269.0" prefWidth="269.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="144.0" minWidth="10.0" prefWidth="136.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="167.0" minWidth="10.0" prefWidth="156.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="38.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <TextField fx:id="IDTF" editable="false" promptText="ID Auto Generated" GridPane.columnIndex="1" />
+            <TextField fx:id="nameTF" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="addressTF" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Address:" GridPane.rowIndex="2">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" GridPane.rowIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Country" GridPane.rowIndex="3">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="First Level Divison:" GridPane.rowIndex="4">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Postal Code:" GridPane.rowIndex="5">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number:" GridPane.rowIndex="6">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <TextField fx:id="phoneNumTF" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <TextField fx:id="postalCodeTF" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <ComboBox fx:id="countryCombobox" prefHeight="25.0" prefWidth="167.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ComboBox fx:id="FLDCombobox" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
+      <HBox layoutX="311.0" layoutY="349.0" prefHeight="39.0" prefWidth="125.0">
+         <children>
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onActionSaveCustomer" style="-fx-background-color: #189AB4;" text="SAVE" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin></Button>
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onActionCancel" style="-fx-background-color: #189AB4;" text="CANCEL" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

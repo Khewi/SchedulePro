@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.loginController">
+   <children>
+      <Text layoutX="133.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule Pro">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Text>
+      <HBox layoutX="59.0" layoutY="68.0" prefHeight="37.0" prefWidth="290.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username: ">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Text>
+            <TextField fx:id="userField" />
+         </children>
+      </HBox>
+      <HBox layoutX="59.0" layoutY="100.0" prefHeight="29.0" prefWidth="234.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password: ">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin></Text>
+            <PasswordField fx:id="passField" />
+         </children>
+      </HBox>
+      <HBox layoutX="239.0" layoutY="149.0" prefHeight="37.0" prefWidth="124.0">
+         <children>
+            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onActionLogin" style="-fx-background-color: #D4F1F4;" text="LOGIN" />
+            <Button fx:id="exitButton" mnemonicParsing="false" onAction="#onActionExit" style="-fx-background-color: #D4F1F4;" text="EXIT">
+               <HBox.margin>
+                  <Insets left="15.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+      <Text layoutX="59.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zone ID: ">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Text>
+      <Text fx:id="genZoneTxt" layoutX="133.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gen Zone">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>
