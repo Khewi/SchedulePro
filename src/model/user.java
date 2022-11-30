@@ -1,0 +1,70 @@
+package model;
+
+
+/***
+ * This class contains getter and setter functions for users.
+ */
+public class user {
+    private int userID;
+    private String username;
+    private String password;
+
+
+    /**
+     * Constructor method for new users.
+     */
+    public user() {
+        this.userID = userID;
+        this.username = username;
+        this.password = password;
+    }
+
+    /**
+     * getter function for userID.
+     * @return user ID
+     */
+    public int getUserID() {
+        return userID;
+    }
+
+    /**
+     * setter function for userID.
+     * @param userID
+     */
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    /**
+     * getter function for username.
+     * @return
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * setter function for username.
+     * @param username
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * getter function for password.
+     * @return password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * setter function for password.
+     * @param password
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+}
