@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -23,16 +23,16 @@ public class allAppsController {
     public Button backButton;
     public Button modifyButton;
     public Button addButton;
-    public TreeTableColumn phoneNumCol;
-    public TreeTableColumn customerID;
-    public TreeTableColumn endCol;
-    public TreeTableColumn startCol;
-    public TreeTableColumn typeCol;
-    public TreeTableColumn contactCol;
-    public TreeTableColumn locationCol;
-    public TreeTableColumn descriptionCol;
-    public TreeTableColumn titleCol;
-    public TreeTableColumn appIDCol;
+    public TableColumn phoneNumCol;
+    public TableColumn customerID;
+    public TableColumn endCol;
+    public TableColumn startCol;
+    public TableColumn typeCol;
+    public TableColumn contactCol;
+    public TableColumn locationCol;
+    public TableColumn descriptionCol;
+    public TableColumn titleCol;
+    public TableColumn appIDCol;
     public Button logoutButton;
     public Button reportsButton;
     public Button customersButton;
@@ -77,7 +77,15 @@ public class allAppsController {
      * This method loads the reports scene.
      * @param actionEvent
      */
-    public void onActionReportsScreen(ActionEvent actionEvent) {
+    public void onActionReportsScreen(ActionEvent actionEvent) throws IOException {
+        System.out.println("Reports button clicked");
+        Parent login = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
+        System.out.println("reports.fxml path recognized");
+        Scene scene = new Scene(login);
+        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        stage.setTitle("Reports Dashboard");
+        stage.setScene(scene);
+        stage.show();
 
     }
 

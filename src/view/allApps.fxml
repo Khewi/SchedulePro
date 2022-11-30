@@ -46,20 +46,20 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Text>
-      <TreeTableView layoutX="132.0" layoutY="72.0" prefHeight="287.0" prefWidth="760.0">
+      <TableView layoutX="132.0" layoutY="72.0" prefHeight="287.0" prefWidth="760.0">
         <columns>
-          <TreeTableColumn fx:id="appIDCol" prefWidth="30.0" text="ID" />
-          <TreeTableColumn fx:id="titleCol" prefWidth="60.0" text="Title" />
-            <TreeTableColumn fx:id="descriptionCol" prefWidth="100.0" text="Description" />
-            <TreeTableColumn fx:id="locationCol" prefWidth="75.0" text="Location" />
-            <TreeTableColumn fx:id="contactCol" prefWidth="75.0" text="Contact" />
-            <TreeTableColumn fx:id="typeCol" prefWidth="75.0" text="Type" />
-            <TreeTableColumn fx:id="startCol" prefWidth="110.0" text="Start Date/Time" />
-            <TreeTableColumn fx:id="endCol" prefWidth="110.0" text="End Date/Time" />
-            <TreeTableColumn fx:id="customerID" prefWidth="75.0" text="Customer ID" />
-            <TreeTableColumn fx:id="phoneNumCol" prefWidth="50.0" text="User ID" />
+          <TableColumn fx:id="appIDCol" prefWidth="30.0" text="ID" />
+          <TableColumn fx:id="titleCol" prefWidth="60.0" text="Title" />
+            <TableColumn fx:id="descriptionCol" prefWidth="100.0" text="Description" />
+            <TableColumn fx:id="locationCol" prefWidth="75.0" text="Location" />
+            <TableColumn fx:id="contactCol" prefWidth="75.0" text="Contact" />
+            <TableColumn fx:id="typeCol" prefWidth="75.0" text="Type" />
+            <TableColumn fx:id="startCol" prefWidth="110.0" text="Start Date/Time" />
+            <TableColumn fx:id="endCol" prefWidth="110.0" text="End Date/Time" />
+            <TableColumn fx:id="customerID" prefWidth="75.0" text="Customer ID" />
+            <TableColumn fx:id="phoneNumCol" prefWidth="50.0" text="User ID" />
         </columns>
-      </TreeTableView>
+      </TableView>
       <HBox layoutX="132.0" layoutY="368.0" prefHeight="34.0" prefWidth="760.0">
          <children>
             <Button fx:id="addButton" mnemonicParsing="false" onAction="#onActionAddApp" style="-fx-background-color: #189AB4;" text="ADD" textFill="WHITE">

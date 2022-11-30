@@ -65,7 +65,15 @@ public class addCustomerController {
      * This method loads the reports scene.
      * @param actionEvent
      */
-    public void onActionReportsScreen(ActionEvent actionEvent) {
+    public void onActionReportsScreen(ActionEvent actionEvent) throws IOException {
+        System.out.println("Reports button clicked");
+        Parent login = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
+        System.out.println("reports.fxml path recognized");
+        Scene scene = new Scene(login);
+        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        stage.setTitle("Reports Dashboard");
+        stage.setScene(scene);
+        stage.show();
     }
 
 

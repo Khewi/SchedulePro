@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -19,13 +19,13 @@ public class customersController {
     public Button appointmentsButton;
     public Button reportsButton;
     public Button logoutButton;
-    public TreeTableColumn cusIDcol;
-    public TreeTableColumn nameCol;
-    public TreeTableColumn addressCol;
-    public TreeTableColumn countryCol;
-    public TreeTableColumn FLDCol;
-    public TreeTableColumn postalCol;
-    public TreeTableColumn phoneNumCol;
+    public TableColumn cusIDcol;
+    public TableColumn nameCol;
+    public TableColumn addressCol;
+    public TableColumn countryCol;
+    public TableColumn FLDCol;
+    public TableColumn postalCol;
+    public TableColumn phoneNumCol;
     public Button addButton;
     public Button modifyButton;
     public Button deleteButton;
@@ -67,7 +67,15 @@ public class customersController {
      * This method loads the reports scene.
      * @param actionEvent
      */
-    public void onActionReportsScreen(ActionEvent actionEvent) {
+    public void onActionReportsScreen(ActionEvent actionEvent) throws IOException {
+        System.out.println("Reports button clicked");
+        Parent login = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
+        System.out.println("reports.fxml path recognized");
+        Scene scene = new Scene(login);
+        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        stage.setTitle("Reports Dashboard");
+        stage.setScene(scene);
+        stage.show();
     }
 
 

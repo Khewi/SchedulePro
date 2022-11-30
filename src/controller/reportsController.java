@@ -5,30 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-
-/***
- * This controller class holds the methods required for the main menu scene.
- */
-public class mainMenuController {
-    public Button reportsButton;
-    public Button logoutButton;
-    public Button customersButton;
-    public Button appointmentsButton;
-    public TableColumn endCol;
-    public TableColumn startCol;
-    public TableColumn appIDcol;
-
-
-    /***
-     * This method loads the customer scene.
-     * @param actionEvent
-     * @throws IOException
-     */
+public class reportsController {
     public void onActionCustomersScreen(ActionEvent actionEvent) throws IOException {
         System.out.println("Customer button clicked");
         Parent cust = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
@@ -40,13 +21,6 @@ public class mainMenuController {
         stage.show();
     }
 
-
-
-    /***
-     * This method loads the appointments scene.
-     * @param actionEvent
-     * @throws IOException
-     */
     public void onActionAppointmentsScreen(ActionEvent actionEvent) throws IOException {
         System.out.println("Appointments button clicked");
         Parent apps = FXMLLoader.load(getClass().getResource("/view/allApps.fxml"));
@@ -58,12 +32,6 @@ public class mainMenuController {
         stage.show();
     }
 
-
-
-    /***
-     * This method loads the reports scene.
-     * @param actionEvent
-     */
     public void onActionReportsScreen(ActionEvent actionEvent) throws IOException {
         System.out.println("Reports button clicked");
         Parent login = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
@@ -75,18 +43,11 @@ public class mainMenuController {
         stage.show();
     }
 
-
-
-    /***
-     * This method logs the user out of the application.
-     * @param actionEvent
-     * @throws IOException
-     */
     public void onActionLogout(ActionEvent actionEvent) throws IOException {
         System.out.println("Logout button clicked");
-        Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+        Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
         System.out.println("login.fxml path recognized");
-        Scene scene = new Scene(mainMenu);
+        Scene scene = new Scene(login);
         Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Schedule Pro");
         stage.setScene(scene);

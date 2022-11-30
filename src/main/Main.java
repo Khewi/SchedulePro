@@ -1,5 +1,6 @@
 package main;
 
+import database.DBConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,6 +30,13 @@ public class Main extends Application {
      * @param args
      */
     public static void main(String[] args) {
+
+        DBConnection.startConnection();
+
         launch(args);
+
+        DBConnection.closeConnection();
+
+
     }
 }
