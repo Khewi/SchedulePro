@@ -46,7 +46,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Text>
-      <TableView layoutX="145.0" layoutY="54.0" prefHeight="281.0" prefWidth="200.0">
+      <TableView fx:id="appointmentTable" layoutX="145.0" layoutY="54.0" prefHeight="281.0" prefWidth="200.0">
         <columns>
           <TableColumn fx:id="appIDcol" prefWidth="50.0" text="App ID" />
           <TableColumn fx:id="startCol" prefWidth="75.0" text="Start" />

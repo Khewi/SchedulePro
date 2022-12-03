@@ -34,6 +34,7 @@ public class appointment {
     public appointment(int appID, String appTitle, String appDescription, String appType, String appLocation,
                        LocalDateTime appStart, LocalDateTime appEnd, int customerID, int userID, int contactID){
         this.appID = appID;
+        this.appTitle = appTitle;
         this.appDescription = appDescription;
         this.appType = appType;
         this.appLocation = appLocation;
@@ -207,4 +208,6 @@ public class appointment {
     public void setContactID(int contactID) {
         this.contactID = contactID;
     }
+
+
 }

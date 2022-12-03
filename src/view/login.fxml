@@ -34,7 +34,7 @@
             <PasswordField fx:id="passField" />
          </children>
       </HBox>
-      <HBox layoutX="239.0" layoutY="149.0" prefHeight="37.0" prefWidth="124.0">
+      <HBox layoutX="256.0" layoutY="150.0" prefHeight="37.0" prefWidth="124.0">
          <children>
             <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onActionLogin" style="-fx-background-color: #D4F1F4;" text="LOGIN" />
             <Button fx:id="exitButton" mnemonicParsing="false" onAction="#onActionExit" style="-fx-background-color: #D4F1F4;" text="EXIT">

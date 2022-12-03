@@ -13,7 +13,11 @@ public class user {
     /**
      * Constructor method for new users.
      */
-    public user() {
+    public user(){
+        super();
+    }
+
+    public user(int userID, String username, String password) {
         this.userID = userID;
         this.username = username;
         this.password = password;
