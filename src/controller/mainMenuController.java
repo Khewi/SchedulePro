@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -29,7 +30,12 @@ public class mainMenuController implements Initializable {
     public TableColumn startCol;
     public TableColumn appIDcol;
     public TableView appointmentTable;
+    public TableColumn typeCol;
+    public ComboBox userComboBox;
     int userID;
+
+
+
 
 
 
@@ -107,20 +113,13 @@ public class mainMenuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-
-
     }
 
-    private void setTable(int userID){
-        appointmentTable.setItems(DBAppointments.getAppsByUserID(userID));
-
-        appIDcol.setCellFactory(new PropertyValueFactory<>("appID"));
-        startCol.setCellFactory(new PropertyValueFactory<>("Start"));
-        endCol.setCellFactory(new PropertyValueFactory<>("end"));
-    }
 
     public void sendUser(int userID) {
         this.userID = userID;
         System.out.println(userID);
-    }
+
+
+        }
 }

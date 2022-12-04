@@ -83,24 +83,8 @@ public class loginController implements Initializable {
         Boolean appIn15Min = false;
 
 
-        if(userID > 0 && validateUserPass(userID, passwordText)){
+        if(validateUserPass(userID, passwordText)){
             activityLog(u.getUsername(), true);
-
-
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/view/mainMenu.fxml"));
-            loader.load();
-
-            mainMenuController mmController = loader.getController();
-            mmController.sendUser(userID);
-
-            Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-            stage.setTitle("Home");
-            Parent scene = loader.getRoot();
-            stage.setScene(new Scene(scene));
-            stage.show();
-            /*
-
 
             Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/mainMenu.fxml"));
             System.out.println("mainMenu.fxml path recognized");
@@ -108,11 +92,10 @@ public class loginController implements Initializable {
             Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
             stage.setTitle("Home");
             stage.setScene(scene);
-            stage.setResizable(false);
             stage.show();
 
 
-             */
+
            for(appointment appointment : getAllUserApps) {
                appStart = appointment.getAppStart();
                getAppID = appointment.getAppID();

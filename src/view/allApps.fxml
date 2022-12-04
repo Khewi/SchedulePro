@@ -46,7 +46,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Text>
-      <TableView layoutX="132.0" layoutY="72.0" prefHeight="287.0" prefWidth="760.0">
+      <TableView fx:id="appTable" layoutX="132.0" layoutY="72.0" prefHeight="287.0" prefWidth="760.0">
         <columns>
           <TableColumn fx:id="appIDCol" prefWidth="30.0" text="ID" />
           <TableColumn fx:id="titleCol" prefWidth="60.0" text="Title" />
@@ -56,8 +56,8 @@
             <TableColumn fx:id="typeCol" prefWidth="75.0" text="Type" />
             <TableColumn fx:id="startCol" prefWidth="110.0" text="Start Date/Time" />
             <TableColumn fx:id="endCol" prefWidth="110.0" text="End Date/Time" />
-            <TableColumn fx:id="customerID" prefWidth="75.0" text="Customer ID" />
-            <TableColumn fx:id="phoneNumCol" prefWidth="50.0" text="User ID" />
+            <TableColumn fx:id="customerIDCol" prefWidth="75.0" text="Customer ID" />
+            <TableColumn fx:id="userIDCol" prefWidth="50.0" text="User ID" />
         </columns>
       </TableView>
       <HBox layoutX="132.0" layoutY="368.0" prefHeight="34.0" prefWidth="760.0">

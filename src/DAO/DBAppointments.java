@@ -72,10 +72,10 @@ public class DBAppointments {
                 LocalDateTime start = rs.getTimestamp("Start").toLocalDateTime();
                 LocalDateTime end = rs.getTimestamp("End").toLocalDateTime();
                 int customerID = rs.getInt("Customer_ID");
-                int user_ID = rs.getInt("User_ID");
-                int contact_ID = rs.getInt("Contact_ID");
+                int userId = rs.getInt("User_ID");
+                int contactID = rs.getInt("Contact_ID");
 
-                appointment b = new appointment(appID, title, description,location, type, start, end, customerID, user_ID, contact_ID);
+                appointment b = new appointment(appID, title, description,location, type, start, end, customerID, userId, contactID);
                 userAppList.add(b);
 
             }

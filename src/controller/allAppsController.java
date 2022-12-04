@@ -1,21 +1,31 @@
 package controller;
 
+import DAO.DBAppointments;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import model.appointment;
 
 import java.io.IOException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.ResourceBundle;
 
 
 /***
  * This controller class holds the methods required for the appointments scene.
  */
-public class allAppsController {
+public class allAppsController implements Initializable {
     public RadioButton monthRB;
     public RadioButton weekRB;
     public RadioButton allRB;
@@ -23,8 +33,10 @@ public class allAppsController {
     public Button backButton;
     public Button modifyButton;
     public Button addButton;
-    public TableColumn phoneNumCol;
-    public TableColumn customerID;
+
+    public TableView appTable;
+    public TableColumn userIDCol;
+    public TableColumn customerIDCol;
     public TableColumn endCol;
     public TableColumn startCol;
     public TableColumn typeCol;
@@ -33,10 +45,48 @@ public class allAppsController {
     public TableColumn descriptionCol;
     public TableColumn titleCol;
     public TableColumn appIDCol;
+
     public Button logoutButton;
     public Button reportsButton;
     public Button customersButton;
     public Button appointmentsButton;
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
+
+        appTable.setItems(allAppsList);
+
+        PropertyValueFactory<appointment, Integer> appIDFact = new PropertyValueFactory<>("appID");
+        PropertyValueFactory<appointment, String> titleFact = new PropertyValueFactory<>("appTitle");
+        PropertyValueFactory<appointment, String> descFact = new PropertyValueFactory<>("appDescription");
+        PropertyValueFactory<appointment, String> locationFact = new PropertyValueFactory<>("appLocation");
+        PropertyValueFactory<appointment, Integer> contactFact = new PropertyValueFactory<>("contactID");
+        PropertyValueFactory<appointment, String> typeFact = new PropertyValueFactory<>("appType");
+        PropertyValueFactory<appointment, LocalDateTime> startFact = new PropertyValueFactory<>("appStart");
+        PropertyValueFactory<appointment, LocalDateTime> endFact = new PropertyValueFactory<>("appEnd");
+        PropertyValueFactory<appointment, Integer> customerIDFact = new PropertyValueFactory<>("contactID");
+        PropertyValueFactory<appointment, Integer> userIDFact = new PropertyValueFactory<>("userID");
+
+
+
+        appIDCol.setCellValueFactory(appIDFact);
+        titleCol.setCellValueFactory(titleFact);
+        descriptionCol.setCellValueFactory(descFact);
+        locationCol.setCellValueFactory(locationFact);
+        contactCol.setCellValueFactory(contactFact);
+        typeCol.setCellValueFactory(typeFact);
+        startCol.setCellValueFactory(startFact);
+        endCol.setCellValueFactory(endFact);
+        customerIDCol.setCellValueFactory(customerIDFact);
+        userIDCol.setCellValueFactory(userIDFact);
+
+
+
+
+    }
+
 
 
     /***
@@ -156,6 +206,8 @@ public class allAppsController {
      * @param actionEvent
      */
     public void onActionSelectAllApp(ActionEvent actionEvent) {
+        ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
+        appTable.setItems(allAppsList);
     }
 
     /***
@@ -163,6 +215,20 @@ public class allAppsController {
      * @param actionEvent
      */
     public void onActionWeekApp(ActionEvent actionEvent) {
+        ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
+        ObservableList<appointment> appByWeek = FXCollections.observableArrayList();
+
+        LocalDateTime weekStart = LocalDateTime.now().plusWeeks(1);
+        LocalDateTime weekEnd = LocalDateTime.now().minusWeeks(1);
+
+        if (allAppsList != null){
+            allAppsList.forEach(appointment -> {
+             if (appointment.getAppEnd().isAfter(weekStart) && appointment.getAppEnd().isBefore(weekEnd)){
+                 appByWeek.add(appointment);
+             }
+             appTable.setItems(appByWeek);
+            });
+        }
     }
 
 
@@ -171,5 +237,21 @@ public class allAppsController {
      * @param actionEvent
      */
     public void onActionMonthApp(ActionEvent actionEvent) {
+        ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
+        ObservableList<appointment> appByMonth = FXCollections.observableArrayList();
+
+        LocalDateTime monthStart = LocalDateTime.now().plusMonths(1);
+        LocalDateTime monthEnd = LocalDateTime.now().minusMonths(1);
+
+        if (allAppsList != null){
+            allAppsList.forEach(appointment -> {
+                if (appointment.getAppEnd().isAfter(monthStart) && appointment.getAppEnd().isBefore(monthEnd)){
+                    appByMonth.add(appointment);
+                }
+                appTable.setItems(appByMonth);
+            });
+        }
     }
+
+
 }

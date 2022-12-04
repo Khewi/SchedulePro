@@ -1,11 +1,16 @@
 package model;
 
 
+import DAO.BDCustomers;
+import database.DBConnection;
+import javafx.collections.ObservableList;
+
 /***
  * This class contains getter and setter functions for customers.
  */
 public class customer {
 
+    public static ObservableList getAllCustomers;
     private int customerID;
     private String customerName;
     private String address;
@@ -134,4 +139,10 @@ public class customer {
     public void setDivisionID(int divisionID) {
         this.divisionID = divisionID;
     }
+
+    public ObservableList<customer> getAllCustomers(){
+        ObservableList<customer> allcust = BDCustomers.getCustomers();
+        return allcust;
+    }
+
 }

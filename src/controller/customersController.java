@@ -1,20 +1,27 @@
 package controller;
 
+import DAO.BDCustomers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import model.customer;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
 /***
  * This controller class holds the method required for the customer scene.
  */
-public class customersController {
+public class customersController implements Initializable {
     public Button customersButton;
     public Button appointmentsButton;
     public Button reportsButton;
@@ -30,6 +37,7 @@ public class customersController {
     public Button modifyButton;
     public Button deleteButton;
     public Button backButton;
+    public TableView customerTable;
 
     /***
      * This method loads the customers scene.
@@ -148,5 +156,10 @@ public class customersController {
         stage.setTitle("Home");
         stage.setScene(scene);
         stage.show();
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
     }
 }

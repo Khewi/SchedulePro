@@ -32,6 +32,28 @@ public class newAppController {
 
 
     /***
+     * This method saves the customer data to the database and returns the user to the customers scene.
+     * @param actionEvent
+     * @throws IOException
+     */
+    public void onActionSaveAppointment(ActionEvent actionEvent) throws IOException {
+
+
+
+
+        System.out.println("Back button clicked");
+        Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/allApps.fxml"));
+        System.out.println("mainMenu.fxml path recognized");
+        Scene scene = new Scene(mainMenu);
+        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        stage.setTitle("Appointments");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+
+    /***
      * This method loads the customer scene.
      * @param actionEvent
      * @throws IOException
@@ -97,24 +119,6 @@ public class newAppController {
     }
 
 
-    /***
-     * This method saves the customer data to the database and returns the user to the customers scene.
-     * @param actionEvent
-     * @throws IOException
-     */
-    public void onActionSaveCustomer(ActionEvent actionEvent) throws IOException {
-
-
-
-        System.out.println("Back button clicked");
-        Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/allApps.fxml"));
-        System.out.println("mainMenu.fxml path recognized");
-        Scene scene = new Scene(mainMenu);
-        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-        stage.setTitle("Appointments");
-        stage.setScene(scene);
-        stage.show();
-    }
 
 
     /***
