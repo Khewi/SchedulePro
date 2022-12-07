@@ -1,7 +1,15 @@
 package controller;
 
+
+import DAO.BDCustomers;
+import DAO.DBContact;
+import DAO.DBUser;
+import database.DBConnection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -9,26 +17,51 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
+import model.appointment;
+import model.contact;
+import model.customer;
+import model.user;
 import java.io.IOException;
+import java.net.URL;
+import java.sql.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.ResourceBundle;
 
 
 /***
  * This controller class holds the methods required for the new appointment scene.
  */
-public class newAppController {
+public class newAppController<localZone> implements Initializable {
     public TextField IDTF;
     public TextField titleTF;
     public TextField descriptionTF;
-    public TextField userIDTF;
-    public TextField customerIDTF;
-    public ComboBox contactTF;
     public TextField locationTF;
     public TextField typeTF;
     public ComboBox startTimeComboBox;
-    public DatePicker startDatePicker;
+    public DatePicker datePicker;
     public ComboBox endTimeCombobox;
     public DatePicker endDatePicker;
+    public ComboBox<customer> customerIDCombo;
+    public ComboBox<contact> contactCombo;
+    public ComboBox<user> userCombo;
+    private final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
+    private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter dateTimeConcatFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+    private ZoneId localZone = ZoneId.systemDefault();
+
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        ObservableList<customer> customerList = BDCustomers.getCustomers();
+        ObservableList<user> userList = DBUser.getAllUsers();
+        ObservableList<contact> contactList = DBContact.getContact();
+
+        customerIDCombo.setItems(customerList);
+        contactCombo.setItems(contactList);
+        userCombo.setItems(userList);
+    }
 
 
     /***
@@ -38,7 +71,57 @@ public class newAppController {
      */
     public void onActionSaveAppointment(ActionEvent actionEvent) throws IOException {
 
+        String title = titleTF.getText();
+        String description = descriptionTF.getText();
+        String location = locationTF.getText();
+        String type = typeTF.getText();
+        /*
+        int customerID = Integer.valueOf(String.valueOf(customerIDCombo.getSelectionModel()));
+        int userID = Integer.valueOf(String.valueOf(userCombo.getSelectionModel()));
+        int contactId = Integer.valueOf(String.valueOf(contactCombo.getSelectionModel()));
 
+
+         */
+
+        //Pulling Date and time information from the combo boxes in the specified format for concat
+        LocalDate localDate = datePicker.getValue();
+
+        //NEED TO CODE TIME COMBO BOX FOR FUNCTIONALITY - PROGRAM BREAKS AT LACK OF INPUT
+        LocalTime localStartTime = LocalTime.parse((CharSequence) startTimeComboBox.getSelectionModel().getSelectedItem(), timeFormat);
+        LocalTime localEndTime = LocalTime.parse((CharSequence) endTimeCombobox.getSelectionModel().getSelectedItem(), timeFormat);
+
+        System.out.println("Local start time grabbed from combo box: " + localStartTime + "\nLocal end time grabbed from combo box: "
+                + localEndTime + "\nLocal Date grabbed from date picker: " + localDate);
+        // date/time concat in users local time for appointment class
+        LocalDateTime startLDTC = LocalDateTime.of(localDate, localStartTime);
+        LocalDateTime endLDTC = LocalDateTime.of(localDate, localEndTime);
+        System.out.println("Concat local date and time- \nStart: " + startLDTC + "\nEnd: " + endLDTC);
+        //Convert local user concat date/time to UTC for database entry
+        ZonedDateTime startUTC = startLDTC.atZone(localZone).withZoneSameInstant(ZoneId.of("UTC"));
+        Timestamp DBStart = Timestamp.valueOf(startUTC.toLocalDateTime());
+        ZonedDateTime endUTC = endLDTC.atZone(localZone).withZoneSameInstant(ZoneId.of("UTC"));
+        Timestamp DBEnd = Timestamp.valueOf(endUTC.toLocalDateTime());
+        System.out.println("converted UTC date/time:\n Start: " + startUTC + "\n End: " + endUTC);
+
+        //Insert new appointment into DB
+        try{
+            int appID = -1;
+            PreparedStatement ps = DBConnection.getConnection().prepareStatement("INSERT INTO appointments(Title, Description, Location, Type, Start, End) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, title);
+            ps.setString(2, description);
+            ps.setString(3, location);
+            ps.setString(4, type);
+            ps.setTimestamp(5, DBStart);
+            ps.setTimestamp(6, DBEnd);
+            System.out.println(ps);
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                appID = rs.getInt(1);
+                System.out.println(appID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 
         System.out.println("Back button clicked");
@@ -136,4 +219,22 @@ public class newAppController {
         stage.setScene(scene);
         stage.show();
     }
+
+    public void customerIDCombo(ActionEvent actionEvent) {
+
+    }
+
+    public void userIDCombo(ActionEvent actionEvent) {
+    }
+
+    public void contactCombo(ActionEvent actionEvent) {
+    }
+
+    public void startTimeCombo(ActionEvent actionEvent) {
+    }
+
+    public void endTimeCombo(ActionEvent actionEvent) {
+    }
+
+
 }

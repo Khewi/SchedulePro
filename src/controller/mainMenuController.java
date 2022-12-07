@@ -115,11 +115,4 @@ public class mainMenuController implements Initializable {
 
     }
 
-
-    public void sendUser(int userID) {
-        this.userID = userID;
-        System.out.println(userID);
-
-
-        }
 }

@@ -71,4 +71,13 @@ public class user {
         this.password = password;
     }
 
+
+    /**
+     * This method overrides Oracles default return style of combo box selections for the user class.
+     * @return username
+     */
+    @Override
+    public String toString(){
+        return userID + " " + username;
+    }
 }

@@ -2,7 +2,6 @@ package model;
 
 
 import DAO.BDCustomers;
-import database.DBConnection;
 import javafx.collections.ObservableList;
 
 /***
@@ -18,6 +17,10 @@ public class customer {
     private String phoneNum;
     private int divisionID;
 
+
+    public customer(){
+        super();
+    }
     /**
      * constructor method for customers.
      * @param customerID
@@ -144,5 +147,15 @@ public class customer {
         ObservableList<customer> allcust = BDCustomers.getCustomers();
         return allcust;
     }
+
+    /**
+     * This method overrides Oracles default return style of combo box selections for the customer class.
+     * @return customerName
+     */
+    @Override
+    public String toString(){
+        return String.valueOf((customerID));
+    }
+
 
 }

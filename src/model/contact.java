@@ -10,6 +10,10 @@ public class contact {
     private String contactName;
     private String email;
 
+    public contact(){
+        super();
+    }
+
     /**
      * Constructor method for new contacts.
      * @param contactID
@@ -70,5 +74,14 @@ public class contact {
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * This method overrides Oracles default return style of combo box selections for the contact class.
+     * @return contactName
+     */
+    @Override
+    public String toString(){
+        return contactID + " " + contactName;
     }
 }
