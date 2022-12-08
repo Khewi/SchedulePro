@@ -154,7 +154,7 @@ public class customer {
      */
     @Override
     public String toString(){
-        return String.valueOf((customerID));
+        return (customerName);
     }
 
 

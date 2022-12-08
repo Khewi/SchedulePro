@@ -12,10 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.appointment;
 import model.contact;
@@ -38,18 +35,16 @@ public class newAppController<localZone> implements Initializable {
     public TextField descriptionTF;
     public TextField locationTF;
     public TextField typeTF;
-    public ComboBox startTimeComboBox;
     public DatePicker datePicker;
-    public ComboBox endTimeCombobox;
-    public DatePicker endDatePicker;
     public ComboBox<customer> customerIDCombo;
     public ComboBox<contact> contactCombo;
     public ComboBox<user> userCombo;
     private final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
     private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final DateTimeFormatter dateTimeConcatFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+    public ComboBox startTimeCombo;
+    public ComboBox endTimeCombo;
     private ZoneId localZone = ZoneId.systemDefault();
-
 
 
     @Override
@@ -61,6 +56,8 @@ public class newAppController<localZone> implements Initializable {
         customerIDCombo.setItems(customerList);
         contactCombo.setItems(contactList);
         userCombo.setItems(userList);
+
+        generateTimeList();
     }
 
 
@@ -69,33 +66,35 @@ public class newAppController<localZone> implements Initializable {
      * @param actionEvent
      * @throws IOException
      */
-    public void onActionSaveAppointment(ActionEvent actionEvent) throws IOException {
+    public void onActionSaveAppointment(ActionEvent actionEvent) throws IOException, SQLException {
 
         String title = titleTF.getText();
         String description = descriptionTF.getText();
         String location = locationTF.getText();
         String type = typeTF.getText();
-        /*
-        int customerID = Integer.valueOf(String.valueOf(customerIDCombo.getSelectionModel()));
-        int userID = Integer.valueOf(String.valueOf(userCombo.getSelectionModel()));
-        int contactId = Integer.valueOf(String.valueOf(contactCombo.getSelectionModel()));
 
+        String customerName = String.valueOf(customerIDCombo.getSelectionModel());
+        String userName = String.valueOf(userCombo.getSelectionModel());
+        String contactName = String.valueOf(contactCombo.getSelectionModel());
 
-         */
+        int userID = getUserID(userName);
+        int contactID = getContactID(contactName);
+        int customerID = getCustomerID(customerName);
+
 
         //Pulling Date and time information from the combo boxes in the specified format for concat
+
         LocalDate localDate = datePicker.getValue();
-
-        //NEED TO CODE TIME COMBO BOX FOR FUNCTIONALITY - PROGRAM BREAKS AT LACK OF INPUT
-        LocalTime localStartTime = LocalTime.parse((CharSequence) startTimeComboBox.getSelectionModel().getSelectedItem(), timeFormat);
-        LocalTime localEndTime = LocalTime.parse((CharSequence) endTimeCombobox.getSelectionModel().getSelectedItem(), timeFormat);
-
+        LocalTime localStartTime = (LocalTime) startTimeCombo.getSelectionModel().getSelectedItem();
+        LocalTime localEndTime = (LocalTime) endTimeCombo.getSelectionModel().getSelectedItem();
         System.out.println("Local start time grabbed from combo box: " + localStartTime + "\nLocal end time grabbed from combo box: "
                 + localEndTime + "\nLocal Date grabbed from date picker: " + localDate);
+
         // date/time concat in users local time for appointment class
         LocalDateTime startLDTC = LocalDateTime.of(localDate, localStartTime);
         LocalDateTime endLDTC = LocalDateTime.of(localDate, localEndTime);
         System.out.println("Concat local date and time- \nStart: " + startLDTC + "\nEnd: " + endLDTC);
+
         //Convert local user concat date/time to UTC for database entry
         ZonedDateTime startUTC = startLDTC.atZone(localZone).withZoneSameInstant(ZoneId.of("UTC"));
         Timestamp DBStart = Timestamp.valueOf(startUTC.toLocalDateTime());
@@ -103,22 +102,30 @@ public class newAppController<localZone> implements Initializable {
         Timestamp DBEnd = Timestamp.valueOf(endUTC.toLocalDateTime());
         System.out.println("converted UTC date/time:\n Start: " + startUTC + "\n End: " + endUTC);
 
+
         //Insert new appointment into DB
         try{
-            int appID = -1;
-            PreparedStatement ps = DBConnection.getConnection().prepareStatement("INSERT INTO appointments(Title, Description, Location, Type, Start, End) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            String sql = "INSERT INTO APPOINTMENTS(Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
             ps.setString(1, title);
             ps.setString(2, description);
             ps.setString(3, location);
             ps.setString(4, type);
             ps.setTimestamp(5, DBStart);
             ps.setTimestamp(6, DBEnd);
+            ps.setInt(7, customerID);
+            ps.setInt(8, userID);
+            ps.setInt(9, contactID);
+
             System.out.println(ps);
-            ResultSet rs = ps.getGeneratedKeys();
-            if(rs.next()){
-                appID = rs.getInt(1);
-                System.out.println(appID);
+
+            int insertSuccess = ps.executeUpdate();
+            if (insertSuccess > 0){
+                System.out.println("appointment insertion successful");
+            }else {
+                System.out.println("appointment insertion failed");
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -135,6 +142,66 @@ public class newAppController<localZone> implements Initializable {
     }
 
 
+    private void generateTimeList(){
+        LocalTime start = LocalTime.of(8, 0,0);
+        LocalTime end = LocalTime.of(17, 0, 0);
+
+        while (start.isBefore(end.plusMinutes(1))){
+            startTimeCombo.getItems().add(start);
+            endTimeCombo.getItems().add(start);
+
+            start = start.plusMinutes(30);
+        }
+    }
+
+    private int getUserID(String userName) throws SQLException {
+       user u = new user();
+        String sql = "SELECT User_Id FROM users WHERE User_Name = '" + userName + " '";
+
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            int userID = rs.getInt("User_ID");
+            u.setUserID(userID);
+            System.out.println("UserID pulled from DB based on combo box selection: " + userID);
+        }
+        return u.getUserID();
+    }
+
+    private int getContactID(String contactName) throws SQLException {
+        contact c = new contact();
+
+        String sql = "SELECT Contact_Id FROM contacts WHERE Contact_Name = '" + contactName + " '";
+
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            int contactID = rs.getInt("Contact_ID");
+            c.setContactID(contactID);
+            System.out.println("ContactID pulled from DB based on combo box selection : " + contactID);
+        }
+        return c.getContactID();
+    }
+
+    public int getCustomerID(String customerName) throws SQLException {
+        customer c = new customer();
+        String sql = "SELECT Customer_Id FROM customers WHERE Customer_Name = '" + customerName + " '";
+
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            int customerID = rs.getInt("Customer_ID");
+            c.setCustomerID(customerID);
+            System.out.println("CustomerID pulled from DB based on combo box selection : " + customerID);
+        }
+        return c.getCustomerID();
+    }
 
     /***
      * This method loads the customer scene.
