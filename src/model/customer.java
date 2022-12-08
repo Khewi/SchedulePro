@@ -39,6 +39,10 @@ public class customer {
         this.divisionID = divisionID;
     }
 
+    public customer(int ID, String name){
+        setCustomerID(ID);
+        setCustomerName(name);
+    };
     /**
      * getter function for customerID.
      * @return customerID

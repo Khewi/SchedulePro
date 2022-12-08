@@ -127,7 +127,7 @@
                </font></Button>
          </children>
       </HBox>
-      <GridPane layoutX="446.0" layoutY="67.0" prefHeight="120.0" prefWidth="228.0">
+      <GridPane layoutX="446.0" layoutY="67.0" prefHeight="120.0" prefWidth="225.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="48.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="156.0" minWidth="10.0" prefWidth="152.0" />
@@ -139,8 +139,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ComboBox fx:id="startTimeComboBox" onAction="#startTimeCombo" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <DatePicker fx:id="datePicker" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" />
+            <DatePicker fx:id="datePicker" prefHeight="25.0" prefWidth="160.0" GridPane.columnIndex="1" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Time:" GridPane.rowIndex="1">
                <font>
                   <Font size="14.0" />
@@ -156,7 +155,8 @@
                   <Font size="14.0" />
                </font>
             </Text>
-            <ComboBox fx:id="endTimeComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="startTimeCombo" prefHeight="25.0" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ComboBox fx:id="endTimeCombo" prefHeight="25.0" prefWidth="156.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
       <Text layoutX="468.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0">

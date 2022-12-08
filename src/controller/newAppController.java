@@ -39,9 +39,6 @@ public class newAppController<localZone> implements Initializable {
     public ComboBox<customer> customerIDCombo;
     public ComboBox<contact> contactCombo;
     public ComboBox<user> userCombo;
-    private final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
-    private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private final DateTimeFormatter dateTimeConcatFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
     public ComboBox startTimeCombo;
     public ComboBox endTimeCombo;
     private ZoneId localZone = ZoneId.systemDefault();
@@ -72,15 +69,9 @@ public class newAppController<localZone> implements Initializable {
         String description = descriptionTF.getText();
         String location = locationTF.getText();
         String type = typeTF.getText();
-
-        String customerName = String.valueOf(customerIDCombo.getSelectionModel());
-        String userName = String.valueOf(userCombo.getSelectionModel());
-        String contactName = String.valueOf(contactCombo.getSelectionModel());
-
-        int userID = getUserID(userName);
-        int contactID = getContactID(contactName);
-        int customerID = getCustomerID(customerName);
-
+        int customerID = customerIDCombo.getValue().getCustomerID();
+        int userID = userCombo.getValue().getUserID();
+        int contactID = contactCombo.getValue().getContactID();
 
         //Pulling Date and time information from the combo boxes in the specified format for concat
 
@@ -154,54 +145,6 @@ public class newAppController<localZone> implements Initializable {
         }
     }
 
-    private int getUserID(String userName) throws SQLException {
-       user u = new user();
-        String sql = "SELECT User_Id FROM users WHERE User_Name = '" + userName + " '";
-
-        PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            int userID = rs.getInt("User_ID");
-            u.setUserID(userID);
-            System.out.println("UserID pulled from DB based on combo box selection: " + userID);
-        }
-        return u.getUserID();
-    }
-
-    private int getContactID(String contactName) throws SQLException {
-        contact c = new contact();
-
-        String sql = "SELECT Contact_Id FROM contacts WHERE Contact_Name = '" + contactName + " '";
-
-        PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            int contactID = rs.getInt("Contact_ID");
-            c.setContactID(contactID);
-            System.out.println("ContactID pulled from DB based on combo box selection : " + contactID);
-        }
-        return c.getContactID();
-    }
-
-    public int getCustomerID(String customerName) throws SQLException {
-        customer c = new customer();
-        String sql = "SELECT Customer_Id FROM customers WHERE Customer_Name = '" + customerName + " '";
-
-        PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            int customerID = rs.getInt("Customer_ID");
-            c.setCustomerID(customerID);
-            System.out.println("CustomerID pulled from DB based on combo box selection : " + customerID);
-        }
-        return c.getCustomerID();
-    }
 
     /***
      * This method loads the customer scene.
