@@ -132,7 +132,9 @@ public class newAppController<localZone> implements Initializable {
         stage.show();
     }
 
-
+    /**
+     * This method generates the time selections for the start and end combo boxes in the new appointment scene.
+     */
     private void generateTimeList(){
         LocalTime start = LocalTime.of(8, 0,0);
         LocalTime end = LocalTime.of(17, 0, 0);
@@ -215,7 +217,7 @@ public class newAppController<localZone> implements Initializable {
 
 
     /***
-     * This method cancels the modificaiton of customer data and returns the user to the customer scene.
+     * This method cancels the modification of customer data and returns the user to the customer scene.
      * @param actionEvent
      * @throws IOException
      */

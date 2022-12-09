@@ -55,9 +55,11 @@ public class customer {
     /**
      * setter function for customerID.
      * @param customerID
+     * @return
      */
-    public void setCustomerID(int customerID) {
+    public int setCustomerID(int customerID) {
         this.customerID = customerID;
+        return customerID;
     }
 
     /**
@@ -158,7 +160,7 @@ public class customer {
      */
     @Override
     public String toString(){
-        return (customerName);
+        return (customerID + " " +customerName);
     }
 
 

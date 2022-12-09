@@ -1,24 +1,30 @@
 package controller;
 
 import DAO.DBAppointments;
+import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.appointment;
+import model.info;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -50,39 +56,26 @@ public class allAppsController implements Initializable {
     public Button reportsButton;
     public Button customersButton;
     public Button appointmentsButton;
+    ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
+
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
+
+
+        appIDCol.setCellValueFactory(new PropertyValueFactory<>("appID"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("appTitle"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("appDescription"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("appType"));
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("appLocation"));
+        startCol.setCellValueFactory(new PropertyValueFactory<>("appStart"));
+        endCol.setCellValueFactory(new PropertyValueFactory<>("appEnd"));
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("contactID"));
+        userIDCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
 
         appTable.setItems(allAppsList);
-
-        PropertyValueFactory<appointment, Integer> appIDFact = new PropertyValueFactory<>("appID");
-        PropertyValueFactory<appointment, String> titleFact = new PropertyValueFactory<>("appTitle");
-        PropertyValueFactory<appointment, String> descFact = new PropertyValueFactory<>("appDescription");
-        PropertyValueFactory<appointment, String> locationFact = new PropertyValueFactory<>("appLocation");
-        PropertyValueFactory<appointment, Integer> contactFact = new PropertyValueFactory<>("contactID");
-        PropertyValueFactory<appointment, String> typeFact = new PropertyValueFactory<>("appType");
-        PropertyValueFactory<appointment, LocalDateTime> startFact = new PropertyValueFactory<>("appStart");
-        PropertyValueFactory<appointment, LocalDateTime> endFact = new PropertyValueFactory<>("appEnd");
-        PropertyValueFactory<appointment, Integer> customerIDFact = new PropertyValueFactory<>("contactID");
-        PropertyValueFactory<appointment, Integer> userIDFact = new PropertyValueFactory<>("userID");
-
-
-
-        appIDCol.setCellValueFactory(appIDFact);
-        titleCol.setCellValueFactory(titleFact);
-        descriptionCol.setCellValueFactory(descFact);
-        locationCol.setCellValueFactory(locationFact);
-        contactCol.setCellValueFactory(contactFact);
-        typeCol.setCellValueFactory(typeFact);
-        startCol.setCellValueFactory(startFact);
-        endCol.setCellValueFactory(endFact);
-        customerIDCol.setCellValueFactory(customerIDFact);
-        userIDCol.setCellValueFactory(userIDFact);
-
-
 
 
     }
@@ -173,14 +166,20 @@ public class allAppsController implements Initializable {
      * @throws IOException
      */
     public void onActionModifyApp(ActionEvent actionEvent) throws IOException {
-        System.out.println("Add button clicked");
-        Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/modifyApp.fxml"));
-        System.out.println("addApp.fxml path recognized");
-        Scene scene = new Scene(mainMenu);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/modifyApp.fxml"));
+        loader.load();
+
+        modifyAppController mAController = loader.getController();
+        mAController.sendAppointment((appointment) appTable.getSelectionModel().getSelectedItem());
+
+
         Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Modify Appointment");
-        stage.setScene(scene);
+        Parent scene = loader.getRoot();
+        stage.setScene(new Scene(scene));
         stage.show();
+
     }
 
     /***
@@ -188,8 +187,53 @@ public class allAppsController implements Initializable {
      * @param actionEvent
      */
     public void onActionDeleteApp(ActionEvent actionEvent) {
+        if(appTable.getSelectionModel().getSelectedItem() != null){
+            appointment deleteApp = (appointment) appTable.getSelectionModel().getSelectedItem();
+            int appID = deleteApp.getAppID();
+            System.out.println(appID + " appointment to be deleted from database");
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete");
+            alert.setContentText("Select OK to delete appointment.");
+            alert.setHeaderText("Do you want to delete appointment " + appID + "?");
+            Optional<ButtonType> action = alert.showAndWait();
+
+            if(action.get() == ButtonType.OK){
+                deleteApp(appID);
+                allAppsList.removeAll();
+                allAppsList = DBAppointments.getAllApps();
+                appTable.setItems(allAppsList);
+            } else {
+                System.out.println("Appointment Delete canceled"); }
+        }
+        else {
+                info.error("Delete Apppointment", "Nothing selected. \n Please select an appointment to delete.");
+        }
+        }
+
+    /**
+     * This method removes appointments from the DB by the selected item in the tableview.
+     * @param appID
+     */
+    public void deleteApp (int appID){
+
+        try{
+            String sql = "DELETE FROM APPOINTMENTS WHERE Appointment_ID = ?";
+            PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+            ps.setInt(1, appID);
+            ps.executeUpdate();
+            System.out.println("Appointment " + appID + " deleted from system.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
+    /**
+     * This method allows the user to travel back to home screen.
+     * @param actionEvent
+     * @throws IOException
+     */
     public void onActionBackButton(ActionEvent actionEvent) throws IOException {
         System.out.println("Back button clicked");
         Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/mainMenu.fxml"));
@@ -231,7 +275,6 @@ public class allAppsController implements Initializable {
         }
     }
 
-
     /***
      * This method only selects the appointments upcoming in the next month.
      * @param actionEvent
@@ -240,18 +283,19 @@ public class allAppsController implements Initializable {
         ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
         ObservableList<appointment> appByMonth = FXCollections.observableArrayList();
 
-        LocalDateTime monthStart = LocalDateTime.now().plusMonths(1);
-        LocalDateTime monthEnd = LocalDateTime.now().minusMonths(1);
+        LocalDateTime weekStart = LocalDateTime.now().plusMonths(1);
+        LocalDateTime weekEnd = LocalDateTime.now().minusMonths(1);
 
-        if (allAppsList != null){
+
             allAppsList.forEach(appointment -> {
-                if (appointment.getAppEnd().isAfter(monthStart) && appointment.getAppEnd().isBefore(monthEnd)){
+                if (appointment.getAppEnd().isAfter(weekStart) && appointment.getAppEnd().isBefore(weekEnd)){
                     appByMonth.add(appointment);
                 }
-                appTable.setItems(appByMonth);
+                appTable.setItems(allAppsList);
             });
         }
-    }
+
+
 
 
 }

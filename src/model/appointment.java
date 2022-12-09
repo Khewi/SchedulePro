@@ -1,6 +1,11 @@
 package model;
 
 
+
+import DAO.DBAppointments;
+import javafx.collections.ObservableList;
+
+import java.security.PublicKey;
 import java.time.LocalDateTime;
 
 /**
@@ -17,6 +22,9 @@ public class appointment {
     private int customerID;
     private int userID;
     private int contactID;
+    private model.contact contact;
+    private model.user user;
+    private model.customer customer;
 
     /**
      * constructor method for new appointments.
@@ -44,6 +52,10 @@ public class appointment {
         this.userID = userID;
         this.contactID = contactID;
 
+    }
+
+    public appointment(){
+        super();
     }
 
     /**
@@ -209,5 +221,13 @@ public class appointment {
         this.contactID = contactID;
     }
 
+    public static ObservableList getAllApps(){
+        ObservableList<appointment> allApps = DBAppointments.getAllApps();
+        return allApps;
+    }
 
+    public user setUser(user user){
+        this.user = user;
+        return user;
+    }
 }
