@@ -14,10 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import model.appointment;
-import model.contact;
-import model.customer;
-import model.user;
+import model.*;
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
@@ -64,7 +62,7 @@ public class newAppController<localZone> implements Initializable {
      * @throws IOException
      */
     public void onActionSaveAppointment(ActionEvent actionEvent) throws IOException, SQLException {
-
+        if(allFieldsValid() == true) {
         String title = titleTF.getText();
         String description = descriptionTF.getText();
         String location = locationTF.getText();
@@ -94,42 +92,68 @@ public class newAppController<localZone> implements Initializable {
         System.out.println("converted UTC date/time:\n Start: " + startUTC + "\n End: " + endUTC);
 
 
-        //Insert new appointment into DB
-        try{
-            String sql = "INSERT INTO APPOINTMENTS(Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-            ps.setString(1, title);
-            ps.setString(2, description);
-            ps.setString(3, location);
-            ps.setString(4, type);
-            ps.setTimestamp(5, DBStart);
-            ps.setTimestamp(6, DBEnd);
-            ps.setInt(7, customerID);
-            ps.setInt(8, userID);
-            ps.setInt(9, contactID);
+            //Insert new appointment into DB
+            try {
+                String sql = "INSERT INTO APPOINTMENTS(Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+                ps.setString(1, title);
+                ps.setString(2, description);
+                ps.setString(3, location);
+                ps.setString(4, type);
+                ps.setTimestamp(5, DBStart);
+                ps.setTimestamp(6, DBEnd);
+                ps.setInt(7, customerID);
+                ps.setInt(8, userID);
+                ps.setInt(9, contactID);
 
-            System.out.println(ps);
+                System.out.println(ps);
 
-            int insertSuccess = ps.executeUpdate();
-            if (insertSuccess > 0){
-                System.out.println("appointment insertion successful");
-            }else {
-                System.out.println("appointment insertion failed");
+                int insertSuccess = ps.executeUpdate();
+                if (insertSuccess > 0) {
+                    System.out.println("appointment insertion successful");
+                } else {
+                    System.out.println("appointment insertion failed");
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+            System.out.println("Back button clicked");
+            Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/allApps.fxml"));
+            System.out.println("mainMenu.fxml path recognized");
+            Scene scene = new Scene(mainMenu);
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            stage.setTitle("Appointments");
+            stage.setScene(scene);
+            stage.show();
+        } else{
+            System.out.println("unable to save appointment to DB");
+        }
+    }
+
+    public boolean allFieldsValid(){
+        if(titleTF.getText().isEmpty() || descriptionTF.getText().isEmpty() || titleTF.getText().isEmpty() ||
+                typeTF.getText().isEmpty() || locationTF.getText().isEmpty() || contactCombo.getItems().isEmpty() ||
+                userCombo.getItems().isEmpty() || contactCombo.getItems().isEmpty() || datePicker.getValue() == null ||
+                startTimeCombo.getSelectionModel().isEmpty() || endTimeCombo.getSelectionModel().isEmpty()) {
+            info.error("SAVE ERROR", "Empty field found while trying to save appointment. Please enter a value in all fields.");
+            return false;
+        } else {
+            info.confirm("Save Appointment", "Are you sure you want to save a new appointment?", "Click OK to save.");
+            return true;
+        }
+    }
+
+    public boolean noOverlap(ZonedDateTime start, ZonedDateTime end){
+        int customerID = customerIDCombo.getValue().getCustomerID();
+        int userID = userCombo.getValue().getUserID();
+        try {
+            String sql = "SELECT * FROM Appointments WHERE (? BETWEEN Start AND End OR ? BETWEEN Start AND END OR ? < Start AND ? > End) AND (Customer_Id = ? and User_Id != ?)";
+            PreparedStatement ps =
         }
 
-
-        System.out.println("Back button clicked");
-        Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/allApps.fxml"));
-        System.out.println("mainMenu.fxml path recognized");
-        Scene scene = new Scene(mainMenu);
-        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-        stage.setTitle("Appointments");
-        stage.setScene(scene);
-        stage.show();
     }
 
     /**

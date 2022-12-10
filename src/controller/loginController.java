@@ -4,6 +4,7 @@ package controller;
 import DAO.DBAppointments;
 import database.DBConnection;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -100,11 +101,13 @@ public class loginController implements Initializable {
            for(appointment appointment : getAllUserApps) {
                appStart = appointment.getAppStart();
                getAppID = appointment.getAppID();
+
                if((appStart.isBefore(plus15min) || appStart.isEqual(plus15min)) && (appStart.isAfter(minus15min)) || appStart.isEqual(minus15min)){
                    System.out.println("time check is running");
                     appIn15Min = true;
                }
                if(!appIn15Min){
+
                    info.confirm("Upcoming Appointment", "You have an an upcoming appointment", "Appointment " + getAppID + " starts at " + appStart);
                    System.out.println("Upcoming appointment identified" + getAppID + " at " + appTimeReminder);
                }

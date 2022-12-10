@@ -6,10 +6,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.appointment;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 /**
@@ -20,6 +27,10 @@ public class DBAppointments {
      * This method accesses the MySQL DB appointment table. It pulls all appointment information and stores it in an observable list array called appList.
      * @return appList
      */
+
+    private static DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    static ZoneId localZone = ZoneId.systemDefault();
+    static ZoneId UTCZone = ZoneId.of("UTC");
 
     public static ObservableList<appointment> getAllApps() {
         ObservableList<appointment> appList = FXCollections.observableArrayList();
@@ -70,13 +81,25 @@ public class DBAppointments {
                 String location = rs.getString("Location");
                 String type = rs.getString("Type");
 
-                LocalDateTime start = rs.getTimestamp("Start").toLocalDateTime();
-                LocalDateTime end = rs.getTimestamp("End").toLocalDateTime();
+                //getting UTC time from DB
+                LocalDateTime UTCStart = rs.getTimestamp("Start").toLocalDateTime();
+                LocalDateTime UTCEnd = rs.getTimestamp("End").toLocalDateTime();
+
+                //
+                ZonedDateTime UTCZoneStart = UTCStart.atZone(UTCZone);
+                ZonedDateTime UTCZoneEnd = UTCEnd.atZone(UTCZone);
+
+                ZonedDateTime convertedStart = UTCZoneStart.withZoneSameInstant(localZone);
+                ZonedDateTime convertedEnd = UTCZoneEnd.withZoneSameInstant(localZone);
+
+                LocalDateTime localStart = LocalDateTime.from(convertedStart);
+                LocalDateTime localEnd = LocalDateTime.from(convertedEnd);
+
                 int customerID = rs.getInt("Customer_ID");
                 int userId = rs.getInt("User_ID");
                 int contactID = rs.getInt("Contact_ID");
 
-                appointment b = new appointment(appID, title, description,location, type, start, end, customerID, userId, contactID);
+                appointment b = new appointment(appID, title, description,location, type, localStart, localEnd, customerID, userId, contactID);
                 userAppList.add(b);
 
             }
@@ -84,6 +107,31 @@ public class DBAppointments {
             e.printStackTrace();
         }
         return userAppList;
+    }
+
+    public static String convertToLocalTimeZone(String dateTime) {
+        String convertedDate = "";
+        try{
+            DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            Date date = utcFormat.parse(dateTime);
+
+            DateFormat currentTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            currentTimeFormat.setTimeZone(TimeZone.getTimeZone(getUserTimeZone()));
+
+            convertedDate = currentTimeFormat.format(date);
+            System.out.println("user zone date/time: " + convertedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return convertedDate;
+    }
+
+    public static String getUserTimeZone(){
+        TimeZone tz = Calendar.getInstance().getTimeZone();
+        System.out.println(tz.getDisplayName());
+        return tz.getID();
     }
 }
 
