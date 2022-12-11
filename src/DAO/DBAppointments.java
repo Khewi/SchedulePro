@@ -99,7 +99,7 @@ public class DBAppointments {
                 int userId = rs.getInt("User_ID");
                 int contactID = rs.getInt("Contact_ID");
 
-                appointment b = new appointment(appID, title, description,location, type, localStart, localEnd, customerID, userId, contactID);
+                appointment b = new appointment(appID, title, description,location, type, UTCStart, UTCEnd, customerID, userId, contactID);
                 userAppList.add(b);
 
             }

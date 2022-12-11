@@ -2,10 +2,10 @@ package controller;
 
 
 import DAO.BDCustomers;
+import DAO.DBAppointments;
 import DAO.DBContact;
 import DAO.DBUser;
 import database.DBConnection;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 
@@ -39,7 +39,10 @@ public class newAppController<localZone> implements Initializable {
     public ComboBox<user> userCombo;
     public ComboBox startTimeCombo;
     public ComboBox endTimeCombo;
-    private ZoneId localZone = ZoneId.systemDefault();
+    private final ZoneId localZone = ZoneId.systemDefault();
+    private final ZoneId ESTZone = ZoneId.of("America/New_York");
+    private final ZoneId UTCZone = ZoneId.of("UTC");
+    ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
 
 
     @Override
@@ -58,102 +61,178 @@ public class newAppController<localZone> implements Initializable {
 
     /***
      * This method saves the customer data to the database and returns the user to the customers scene.
-     * @param actionEvent
+     * @param actionEvent save button
      * @throws IOException
      */
     public void onActionSaveAppointment(ActionEvent actionEvent) throws IOException, SQLException {
-        if(allFieldsValid() == true) {
-        String title = titleTF.getText();
-        String description = descriptionTF.getText();
-        String location = locationTF.getText();
-        String type = typeTF.getText();
-        int customerID = customerIDCombo.getValue().getCustomerID();
-        int userID = userCombo.getValue().getUserID();
-        int contactID = contactCombo.getValue().getContactID();
+        if (allFieldsValid() == true) {
+            int appID = -1;
+            String title = titleTF.getText();
+            String description = descriptionTF.getText();
+            String location = locationTF.getText();
+            String type = typeTF.getText();
+            int customerID = customerIDCombo.getValue().getCustomerID();
+            int userID = userCombo.getValue().getUserID();
+            int contactID = contactCombo.getValue().getContactID();
 
-        //Pulling Date and time information from the combo boxes in the specified format for concat
+            //Pulling Date and time information from the combo boxes in the specified format for concat
+            LocalDate localDate = datePicker.getValue();
+            LocalTime localStartTime = (LocalTime) startTimeCombo.getSelectionModel().getSelectedItem();
+            LocalTime localEndTime = (LocalTime) endTimeCombo.getSelectionModel().getSelectedItem();
+            System.out.println("Local start time grabbed from combo box: " + localStartTime + "\nLocal end time grabbed from combo box: "
+                    + localEndTime + "\nLocal Date grabbed from date picker: " + localDate);
 
-        LocalDate localDate = datePicker.getValue();
-        LocalTime localStartTime = (LocalTime) startTimeCombo.getSelectionModel().getSelectedItem();
-        LocalTime localEndTime = (LocalTime) endTimeCombo.getSelectionModel().getSelectedItem();
-        System.out.println("Local start time grabbed from combo box: " + localStartTime + "\nLocal end time grabbed from combo box: "
-                + localEndTime + "\nLocal Date grabbed from date picker: " + localDate);
+            // date/time concat in users local time for appointment class
+            LocalDateTime startLDTC = LocalDateTime.of(localDate, localStartTime);
+            LocalDateTime endLDTC = LocalDateTime.of(localDate, localEndTime);
+            System.out.println("Concat local date and time- \nStart: " + startLDTC + "\nEnd: " + endLDTC);
 
-        // date/time concat in users local time for appointment class
-        LocalDateTime startLDTC = LocalDateTime.of(localDate, localStartTime);
-        LocalDateTime endLDTC = LocalDateTime.of(localDate, localEndTime);
-        System.out.println("Concat local date and time- \nStart: " + startLDTC + "\nEnd: " + endLDTC);
+            /* //Convert local user concat date/time to UTC for database entry
+            ZonedDateTime startUTC = startLDTC.atZone(localZone).withZoneSameInstant(ZoneId.of("UTC"));
+            Timestamp DBStart = Timestamp.valueOf(startUTC.toLocalDateTime());
+            ZonedDateTime endUTC = endLDTC.atZone(localZone).withZoneSameInstant(ZoneId.of("UTC"));
+            Timestamp DBEnd = Timestamp.valueOf(endUTC.toLocalDateTime());
+            System.out.println("converted UTC date/time:\n Start: " + startUTC + "\n End: " + endUTC);
 
-        //Convert local user concat date/time to UTC for database entry
-        ZonedDateTime startUTC = startLDTC.atZone(localZone).withZoneSameInstant(ZoneId.of("UTC"));
-        Timestamp DBStart = Timestamp.valueOf(startUTC.toLocalDateTime());
-        ZonedDateTime endUTC = endLDTC.atZone(localZone).withZoneSameInstant(ZoneId.of("UTC"));
-        Timestamp DBEnd = Timestamp.valueOf(endUTC.toLocalDateTime());
-        System.out.println("converted UTC date/time:\n Start: " + startUTC + "\n End: " + endUTC);
+             */
 
+            if (noOverlap(customerID, startLDTC, endLDTC) == false) {
 
-            //Insert new appointment into DB
-            try {
-                String sql = "INSERT INTO APPOINTMENTS(Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-                ps.setString(1, title);
-                ps.setString(2, description);
-                ps.setString(3, location);
-                ps.setString(4, type);
-                ps.setTimestamp(5, DBStart);
-                ps.setTimestamp(6, DBEnd);
-                ps.setInt(7, customerID);
-                ps.setInt(8, userID);
-                ps.setInt(9, contactID);
+                //Insert new appointment into DB
+                try {
+                    String sql = "INSERT INTO APPOINTMENTS(Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+                    ps.setString(1, title);
+                    ps.setString(2, description);
+                    ps.setString(3, location);
+                    ps.setString(4, type);
+                    ps.setTimestamp(5, Timestamp.valueOf(startLDTC));
+                    ps.setTimestamp(6, Timestamp.valueOf(endLDTC));
+                    ps.setInt(7, customerID);
+                    ps.setInt(8, userID);
+                    ps.setInt(9, contactID);
 
-                System.out.println(ps);
+                    System.out.println(ps);
 
-                int insertSuccess = ps.executeUpdate();
-                if (insertSuccess > 0) {
-                    System.out.println("appointment insertion successful");
-                } else {
-                    System.out.println("appointment insertion failed");
+                    int insertSuccess = ps.executeUpdate();
+                    if (insertSuccess > 0) {
+                        System.out.println("appointment insertion successful");
+                    } else {
+                        System.out.println("appointment insertion failed");
+                    }
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
 
-            } catch (SQLException e) {
-                e.printStackTrace();
+
+                System.out.println("Back button clicked");
+                Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/allApps.fxml"));
+                System.out.println("mainMenu.fxml path recognized");
+                Scene scene = new Scene(mainMenu);
+                Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+                stage.setTitle("Appointments");
+                stage.setScene(scene);
+                stage.show();
             }
-
-
-            System.out.println("Back button clicked");
-            Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/allApps.fxml"));
-            System.out.println("mainMenu.fxml path recognized");
-            Scene scene = new Scene(mainMenu);
-            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
-            stage.setTitle("Appointments");
-            stage.setScene(scene);
-            stage.show();
-        } else{
-            System.out.println("unable to save appointment to DB");
+        }else {
+            System.out.println("unable to save appointment");
         }
     }
+
+
+
 
     public boolean allFieldsValid(){
+
+        //grabbing date/time from fields and creating start and end concat date/Times
+        LocalDate date = datePicker.getValue();
+        LocalTime start = (LocalTime) startTimeCombo.getSelectionModel().getSelectedItem();
+        LocalTime end = (LocalTime) endTimeCombo.getSelectionModel().getSelectedItem();
+        LocalDateTime localStart = LocalDateTime.of(date, start);
+        LocalDateTime localEnd = LocalDateTime.of(date, end);
+
+        //converting LocalDateTime to ZonedDateTime
+        ZonedDateTime ZonedStart = ZonedDateTime.of(localStart, localZone);
+        ZonedDateTime ZonedEnd = ZonedDateTime.of(localEnd, localZone);
+        System.out.println("Local zone time: \nStart: " + ZonedStart + "\n End: " + ZonedEnd);
+
+        //Converting local zone date/time to EST time
+        ZonedDateTime ESTStart = ZonedStart.withZoneSameInstant(ESTZone);
+        ZonedDateTime ESTEnd = ZonedEnd.withZoneSameInstant(ESTZone);
+
+        System.out.println("EST converted zone time: \nStart: " + ESTStart + "\n End: " + ESTEnd);
+
+        //Setting EST business hours for logic check
+        LocalTime businessStart = LocalTime.of(8,0,0);
+        LocalTime businessEnd = LocalTime.of(22, 0, 0);
+        //Converting business hours to LocalDateTime for logic check
+        LocalDateTime businessDTStart = LocalDateTime.of(date, businessStart);
+        LocalDateTime businessDTEnd = LocalDateTime.of(date, businessEnd);
+        //converting to ZonedDateTime for time comparison in logic check
+        ZonedDateTime ESTBusinessStart = ZonedDateTime.of(businessDTStart, ESTZone);
+        ZonedDateTime ESTBusinessEnd = ZonedDateTime.of(businessDTEnd,ESTZone);
+
+
+
+
+
         if(titleTF.getText().isEmpty() || descriptionTF.getText().isEmpty() || titleTF.getText().isEmpty() ||
-                typeTF.getText().isEmpty() || locationTF.getText().isEmpty() || contactCombo.getItems().isEmpty() ||
-                userCombo.getItems().isEmpty() || contactCombo.getItems().isEmpty() || datePicker.getValue() == null ||
-                startTimeCombo.getSelectionModel().isEmpty() || endTimeCombo.getSelectionModel().isEmpty()) {
-            info.error("SAVE ERROR", "Empty field found while trying to save appointment. Please enter a value in all fields.");
-            return false;
-        } else {
-            info.confirm("Save Appointment", "Are you sure you want to save a new appointment?", "Click OK to save.");
-            return true;
-        }
+                    typeTF.getText().isEmpty() || locationTF.getText().isEmpty() || contactCombo.getItems().isEmpty() ||
+                    userCombo.getItems().isEmpty() || contactCombo.getItems().isEmpty() || datePicker.getValue() == null ||
+                    startTimeCombo.getSelectionModel().isEmpty() || endTimeCombo.getSelectionModel().isEmpty()) {
+                info.error("SAVE ERROR", "Empty field found while trying to save appointment. Please enter a value in all fields.");
+                return false;
+            } else if(start.isAfter(end)){
+                info.error("START TIME ERROR", "The start time cannot begin after the end time. Select a START time that begins before the END time.");
+                return false;
+            }
+            else if(ZonedStart.isBefore(ESTBusinessStart) || ZonedStart.isAfter(ESTBusinessEnd) || ZonedEnd.isBefore(ZonedStart) || ZonedEnd.isAfter(ESTBusinessEnd)){
+                info.error("SCHEDULE ERROR", "Appointment time is outside of business hours. Please select a time during the hours of 8am and 10pm EST.");
+                return false;
+            }
+            else {
+                info.confirm("Save Appointment", "Are you sure you want to save a new appointment?", "Click OK to save.");
+                return true;
+            }
     }
 
-    public boolean noOverlap(ZonedDateTime start, ZonedDateTime end){
-        int customerID = customerIDCombo.getValue().getCustomerID();
-        int userID = userCombo.getValue().getUserID();
-        try {
-            String sql = "SELECT * FROM Appointments WHERE (? BETWEEN Start AND End OR ? BETWEEN Start AND END OR ? < Start AND ? > End) AND (Customer_Id = ? and User_Id != ?)";
-            PreparedStatement ps =
-        }
 
+
+    public boolean noOverlap(int customerID, LocalDateTime start, LocalDateTime end) {
+        System.out.println("\nnoOVerlap method used\n---------------");
+        int appID = -1;
+        boolean hasConflict = false;
+        for (appointment appointments : allAppsList) {
+            LocalDateTime verifyStart = appointments.getAppStart();
+            LocalDateTime verifyEnd = appointments.getAppEnd();
+            System.out.println("for loop to check app time starting \n ------------------");
+
+            //issue with logic check
+            if ((customerID == appointments.getCustomerID()) && (appID != appointments.getAppID()) &&
+                    ((start.isBefore(verifyStart)) && (end.isAfter(verifyEnd)))) {
+                System.out.println("Overlapping appointment. Unable to save current appointment.");
+                hasConflict = true;
+                info.error("OVERLAPPING APPOINTMENT", "The current time of this appointment " +
+                        "overlaps an existing appointment in the system for this customer. Please change the time to one that does not overlap the existing appointment");
+            } else if ((customerID == appointments.getCustomerID()) && (appID != appointments.getAppID())
+                    && ((start.isAfter(verifyStart)) && (end.isBefore(verifyEnd)))) {
+                System.out.println("Overlapping appointment. Unable to save current appointment.");
+                hasConflict = true;
+                info.error("OVERLAPPING APPOINTMENT", "The START time of this appointment " +
+                        "overlaps an existing appointment in the system for this customer.");
+            } else if ((customerID == appointments.getCustomerID()) && (appID != appointments.getAppID())
+                    && ((start.isAfter(verifyStart)) && end.isBefore(verifyEnd))) {
+                System.out.println("Overlapping appointment. Unable to save current appointment.");
+                hasConflict = true;
+                info.error("OVERLAPPING APPOINTMENT", "The END time of this appointment " +
+                        "overlaps an existing appointment in the system for this customer.");
+            } else {
+                hasConflict = false;
+                System.out.println("This appointment does not overlap any existing appointments with the same customer.");
+            }
+
+        } return hasConflict;
     }
 
     /**
@@ -161,7 +240,7 @@ public class newAppController<localZone> implements Initializable {
      */
     private void generateTimeList(){
         LocalTime start = LocalTime.of(8, 0,0);
-        LocalTime end = LocalTime.of(17, 0, 0);
+        LocalTime end = LocalTime.of(22, 0, 0);
 
         while (start.isBefore(end.plusMinutes(1))){
             startTimeCombo.getItems().add(start);
