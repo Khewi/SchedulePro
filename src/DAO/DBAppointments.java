@@ -128,6 +128,10 @@ public class DBAppointments {
         return convertedDate;
     }
 
+    /**
+     * this method grabs the users timezone. It is used in the database call for timezone conversion to localDateTime of the users zone.
+     * @return
+     */
     public static String getUserTimeZone(){
         TimeZone tz = Calendar.getInstance().getTimeZone();
         System.out.println(tz.getDisplayName());

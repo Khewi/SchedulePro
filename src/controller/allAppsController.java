@@ -59,7 +59,11 @@ public class allAppsController implements Initializable {
     ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
 
 
-
+    /**
+     * This method initializes the allAppsController
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

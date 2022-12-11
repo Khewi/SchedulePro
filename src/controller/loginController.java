@@ -84,49 +84,51 @@ public class loginController implements Initializable {
         Boolean appIn15Min = false;
 
 
-        if(validateUserPass(userID, passwordText)){
+        if (validateUserPass(userID, passwordText)) {
             activityLog(u.getUsername(), true);
+
 
             Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/mainMenu.fxml"));
             System.out.println("mainMenu.fxml path recognized");
             Scene scene = new Scene(mainMenu);
-            Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
             stage.setTitle("Home");
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
 
+            for (appointment appointment : getAllUserApps) {
+                System.out.println("Logged in userID: " + userID);
+                appStart = appointment.getAppStart();
+                getAppID = appointment.getAppID();
+                int checkAppUserId = appointment.getUserID();
+                System.out.println("Appointment Check - userID: " + checkAppUserId + "  AppID: " + getAppID + " appStart: " + appStart);
 
-
-           for(appointment appointment : getAllUserApps) {
-               appStart = appointment.getAppStart();
-               getAppID = appointment.getAppID();
-
-               if((appStart.isBefore(plus15min) || appStart.isEqual(plus15min)) && (appStart.isAfter(minus15min)) || appStart.isEqual(minus15min)){
-                   System.out.println("time check is running");
+                if (userID == checkAppUserId && (appStart.isBefore(plus15min) || appStart.isEqual(plus15min)) && (appStart.isAfter(minus15min)) || appStart.isEqual(minus15min)) {
+                    System.out.println("time check is running");
                     appIn15Min = true;
-               }
-               if(!appIn15Min){
+                    getAppID = appointment.getAppID();
+                    appStart = appointment.getAppStart();
+                    info.confirm("Upcoming Appointment", "You have an an upcoming appointment", "Appointment " + getAppID + " starts at " + appStart);
+                }
+                if(appIn15Min != false){
+                    System.out.println("Upcoming appointment identified" + getAppID + " at " + appStart);
+                }
+            }
+            if(appIn15Min == false){
+                info.confirm("Time to relax", "You do not have any upcoming appointments.", "");
+                System.out.println("No upcoming appointments found.");
+            }
 
-                   info.confirm("Upcoming Appointment", "You have an an upcoming appointment", "Appointment " + getAppID + " starts at " + appStart);
-                   System.out.println("Upcoming appointment identified" + getAppID + " at " + appTimeReminder);
-               }
-               else{
-                   info.confirm("Time to relax", "You do not have any upcoming appointments.", "");
-                   System.out.println("No upcoming appointments found.");
-               }
-           }
-
-
-        }
-       else if(userField.getText().isEmpty() || passField.getText().isEmpty()){
-           info.error("Input Error", "Both fields must have a username and password entered. Please enter user data in both fields.");
+    }
+        else if (userField.getText().isEmpty() || passField.getText().isEmpty()) {
+            info.error("Input Error", "Both fields must have a username and password entered. Please enter user data in both fields.");
             activityLog(u.getUsername(), false);
 
         } else {
-            info.error("Input error","Please enter a valid username or password.");
+            info.error("Input error", "Please enter a valid username or password.");
             activityLog(u.getUsername(), false);
-            }
+        }
 
     }
 

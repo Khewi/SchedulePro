@@ -21,6 +21,7 @@ import java.net.URL;
 import java.sql.*;
 import java.time.*;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -86,15 +87,6 @@ public class newAppController<localZone> implements Initializable {
             LocalDateTime startLDTC = LocalDateTime.of(localDate, localStartTime);
             LocalDateTime endLDTC = LocalDateTime.of(localDate, localEndTime);
             System.out.println("Concat local date and time- \nStart: " + startLDTC + "\nEnd: " + endLDTC);
-
-            /* //Convert local user concat date/time to UTC for database entry
-            ZonedDateTime startUTC = startLDTC.atZone(localZone).withZoneSameInstant(ZoneId.of("UTC"));
-            Timestamp DBStart = Timestamp.valueOf(startUTC.toLocalDateTime());
-            ZonedDateTime endUTC = endLDTC.atZone(localZone).withZoneSameInstant(ZoneId.of("UTC"));
-            Timestamp DBEnd = Timestamp.valueOf(endUTC.toLocalDateTime());
-            System.out.println("converted UTC date/time:\n Start: " + startUTC + "\n End: " + endUTC);
-
-             */
 
             if (noOverlap(customerID, startLDTC, endLDTC) == false) {
 
@@ -173,6 +165,8 @@ public class newAppController<localZone> implements Initializable {
         ZonedDateTime ESTBusinessStart = ZonedDateTime.of(businessDTStart, ESTZone);
         ZonedDateTime ESTBusinessEnd = ZonedDateTime.of(businessDTEnd,ESTZone);
 
+        int customerID = customerIDCombo.getSelectionModel().getSelectedIndex();
+        int appID = -1;
 
 
 
@@ -192,46 +186,53 @@ public class newAppController<localZone> implements Initializable {
                 return false;
             }
             else {
-                info.confirm("Save Appointment", "Are you sure you want to save a new appointment?", "Click OK to save.");
-                return true;
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("SAVE APPOINTMENT");
+                alert.setHeaderText("Do you want to save the current appointment?");
+                alert.setContentText("Click OK to save appointment.");
+                Optional<ButtonType> input = alert.showAndWait();
+                if (input.get() == ButtonType.OK){
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
     }
 
 
 
     public boolean noOverlap(int customerID, LocalDateTime start, LocalDateTime end) {
-        System.out.println("\nnoOVerlap method used\n---------------");
+        System.out.println("\nnoOverlap method used\n---------------");
         int appID = -1;
         boolean hasConflict = false;
         for (appointment appointments : allAppsList) {
+            System.out.println("CustomerID Being compared: " + customerID +"\nLocal start for new appointment: " + start + "Local end for new appointment: " + end);
+
             LocalDateTime verifyStart = appointments.getAppStart();
+            System.out.println("Start Time of app in system: " + verifyStart);
+
             LocalDateTime verifyEnd = appointments.getAppEnd();
+            System.out.println("End Time of app in system: " + verifyEnd);
             System.out.println("for loop to check app time starting \n ------------------");
 
-            //issue with logic check
-            if ((customerID == appointments.getCustomerID()) && (appID != appointments.getAppID()) &&
-                    ((start.isBefore(verifyStart)) && (end.isAfter(verifyEnd)))) {
-                System.out.println("Overlapping appointment. Unable to save current appointment.");
-                hasConflict = true;
-                info.error("OVERLAPPING APPOINTMENT", "The current time of this appointment " +
-                        "overlaps an existing appointment in the system for this customer. Please change the time to one that does not overlap the existing appointment");
-            } else if ((customerID == appointments.getCustomerID()) && (appID != appointments.getAppID())
-                    && ((start.isAfter(verifyStart)) && (end.isBefore(verifyEnd)))) {
-                System.out.println("Overlapping appointment. Unable to save current appointment.");
-                hasConflict = true;
-                info.error("OVERLAPPING APPOINTMENT", "The START time of this appointment " +
-                        "overlaps an existing appointment in the system for this customer.");
-            } else if ((customerID == appointments.getCustomerID()) && (appID != appointments.getAppID())
-                    && ((start.isAfter(verifyStart)) && end.isBefore(verifyEnd))) {
-                System.out.println("Overlapping appointment. Unable to save current appointment.");
-                hasConflict = true;
-                info.error("OVERLAPPING APPOINTMENT", "The END time of this appointment " +
-                        "overlaps an existing appointment in the system for this customer.");
-            } else {
+            int customerIDCheck = appointments.getCustomerID();
+            int appIDCheck = appointments.getAppID();
+            System.out.println("CustomerIDCheck: " + customerIDCheck + "\nappIDCheck: " + appIDCheck);
+
+            if ((customerID == customerIDCheck) && (appID != appIDCheck)
+                    && (start.isBefore(verifyStart) && end.isBefore(verifyStart)) || (start.isAfter(verifyEnd) && end.isAfter(verifyEnd))) {
                 hasConflict = false;
                 System.out.println("This appointment does not overlap any existing appointments with the same customer.");
+            } else if(customerID != customerIDCheck){
+                hasConflict = false;
+                System.out.println("No appointment conflict. The customer ID does not match any existing appointments in the system.");
             }
-
+            else{
+                info.error("OVERLAPPING APPOINTMENT", "The time of this appointment " +
+                        "overlaps an existing appointment in the system for this customer.");
+                return true;
+            }
         } return hasConflict;
     }
 
