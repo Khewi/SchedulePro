@@ -1,6 +1,7 @@
 package controller;
 
 import DAO.BDCustomers;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -30,7 +31,6 @@ public class customersController implements Initializable {
     public TableColumn nameCol;
     public TableColumn addressCol;
     public TableColumn countryCol;
-    public TableColumn FLDCol;
     public TableColumn postalCol;
     public TableColumn phoneNumCol;
     public Button addButton;
@@ -38,6 +38,23 @@ public class customersController implements Initializable {
     public Button deleteButton;
     public Button backButton;
     public TableView customerTable;
+    public TableColumn stateFLDCol;
+
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        ObservableList<customer> allCustomers = BDCustomers.getCustomers();
+
+
+        cusIDcol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
+        postalCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+        phoneNumCol.setCellValueFactory(new PropertyValueFactory<>("phoneNum"));
+
+        customerTable.setItems(allCustomers);
+    }
 
     /***
      * This method loads the customers scene.
@@ -158,8 +175,5 @@ public class customersController implements Initializable {
         stage.show();
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
 
-    }
 }

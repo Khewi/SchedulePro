@@ -56,6 +56,7 @@ public class loginController implements Initializable {
 
         genZoneTxt.setText(String.valueOf(zone));
 
+
        }
 
 

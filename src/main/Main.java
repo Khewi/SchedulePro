@@ -6,9 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 /***
@@ -36,8 +35,6 @@ public class Main extends Application {
     public static void main(String[] args){
 
         DBConnection.startConnection();
-
-
 
         launch(args);
 

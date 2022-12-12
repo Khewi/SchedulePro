@@ -182,7 +182,7 @@ public class modifyAppController implements Initializable {
      */
     public void onActionSaveCustomer(ActionEvent actionEvent) throws IOException {
         if(allFieldsValid() == true) {
-            String id = IDTF.getText();
+            int appid = Integer.parseInt(IDTF.getText());
             String title = titleTF.getText();
             String description = descriptionTF.getText();
             String location = locationTF.getText();
@@ -199,14 +199,16 @@ public class modifyAppController implements Initializable {
             LocalDateTime startLDTC = LocalDateTime.of(localDate, localStartTime);
             LocalDateTime endLDTC = LocalDateTime.of(localDate, localEndTime);
 
-            if (noOverlap(custID, startLDTC, endLDTC) == false) {
+            if (noOverlap(custID, appid, startLDTC, endLDTC) == false) {
                 //Insert new appointment into DB
                 try {
                     String sql = ("UPDATE appointments " +
                             "SET Appointment_ID = ?, Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? " +
                             "WHERE Appointment_ID = ?");
                     PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-                    ps.setInt(1, Integer.parseInt(id));
+
+
+                    ps.setInt(1, appid);
                     ps.setString(2, title);
                     ps.setString(3, description);
                     ps.setString(4, location);
@@ -216,7 +218,7 @@ public class modifyAppController implements Initializable {
                     ps.setInt(8, custID);
                     ps.setInt(9, userID);
                     ps.setInt(10, contactID);
-                    ps.setInt(11, Integer.parseInt(id));
+                    ps.setInt(11, appid);
 
                     System.out.println(ps);
 
@@ -313,9 +315,8 @@ public class modifyAppController implements Initializable {
         }
         }
 
-    public boolean noOverlap(int customerID, LocalDateTime start, LocalDateTime end) {
+    public boolean noOverlap(int customerID, int appID, LocalDateTime start, LocalDateTime end) {
         System.out.println("\nnoOverlap method used\n---------------");
-        int appID = -1;
         boolean hasConflict = false;
         for (appointment appointments : allAppsList) {
             System.out.println("CustomerID Being compared: " + customerID +"\nLocal start for new appointment: " + start + "Local end for new appointment: " + end);

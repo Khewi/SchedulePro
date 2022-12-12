@@ -50,10 +50,10 @@
         <columns>
           <TableColumn fx:id="cusIDcol" prefWidth="50.0" text="ID" />
           <TableColumn fx:id="nameCol" prefWidth="144.0" text="Name" />
-            <TableColumn fx:id="addressCol" prefWidth="175.0" text="Address" />
-            <TableColumn fx:id="countryCol" prefWidth="71.0" text="Country" />
-            <TableColumn fx:id="FLDCol" prefWidth="113.0" text="First Level Div" />
-            <TableColumn fx:id="postalCol" prefWidth="88.0" text="Postal Code" />
+            <TableColumn fx:id="addressCol" prefWidth="154.0" text="Address" />
+            <TableColumn fx:id="stateFLDCol" prefWidth="94.0" text="State" />
+            <TableColumn fx:id="postalCol" prefWidth="98.0" text="Postal Code" />
+            <TableColumn fx:id="countryCol" prefWidth="101.0" text="Country" />
             <TableColumn fx:id="phoneNumCol" prefWidth="125.0" text="Phone Number" />
         </columns>
       </TableView>

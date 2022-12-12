@@ -136,6 +136,11 @@ public class allAppsController implements Initializable {
 
     }
 
+    /**
+     * This method logs the user out of the program and returns to the login screen.
+     * @param actionEvent
+     * @throws IOException
+     */
     public void onActionLogout(ActionEvent actionEvent) throws IOException {
         System.out.println("Logout button clicked");
         Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
@@ -266,13 +271,17 @@ public class allAppsController implements Initializable {
         ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
         ObservableList<appointment> appByWeek = FXCollections.observableArrayList();
 
-        LocalDateTime weekStart = LocalDateTime.now().plusWeeks(1);
-        LocalDateTime weekEnd = LocalDateTime.now().minusWeeks(1);
+        LocalDateTime plus1WK = LocalDateTime.now().plusWeeks(1);
+        LocalDateTime minus1WK = LocalDateTime.now().minusWeeks(1);
+
+        System.out.println("week RB clicked");
 
         if (allAppsList != null){
             allAppsList.forEach(appointment -> {
-             if (appointment.getAppEnd().isAfter(weekStart) && appointment.getAppEnd().isBefore(weekEnd)){
+             if (appointment.getAppStart().isAfter(minus1WK) && appointment.getAppStart().isBefore(plus1WK) || ((appointment.getAppStart().equals(minus1WK) || appointment.getAppStart().equals(plus1WK)))){
                  appByWeek.add(appointment);
+
+
              }
              appTable.setItems(appByWeek);
             });
@@ -287,15 +296,17 @@ public class allAppsController implements Initializable {
         ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
         ObservableList<appointment> appByMonth = FXCollections.observableArrayList();
 
-        LocalDateTime weekStart = LocalDateTime.now().plusMonths(1);
-        LocalDateTime weekEnd = LocalDateTime.now().minusMonths(1);
+        LocalDateTime plus1Month = LocalDateTime.now().plusMonths(1);
+        LocalDateTime minus1Month= LocalDateTime.now().minusMonths(1);
 
+        System.out.println("month RB clicked");
 
             allAppsList.forEach(appointment -> {
-                if (appointment.getAppEnd().isAfter(weekStart) && appointment.getAppEnd().isBefore(weekEnd)){
+                if (appointment.getAppStart().isAfter(minus1Month) && appointment.getAppStart().isBefore(plus1Month) || ((appointment.getAppStart().equals(minus1Month) || appointment.getAppStart().equals(plus1Month)))) {
                     appByMonth.add(appointment);
                 }
-                appTable.setItems(allAppsList);
+                appTable.setItems(appByMonth);
+                System.out.println(LocalDateTime.now());
             });
         }
 
