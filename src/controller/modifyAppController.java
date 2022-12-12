@@ -59,6 +59,7 @@ public class modifyAppController implements Initializable {
         ObservableList<user> userList = DBUser.getAllUsers();
         ObservableList<contact> contactList = DBContact.getContact();
 
+
         customerComboBox.setItems(customerList);
         userComboBox.setItems(userList);
         contactCombobox.setItems(contactList);

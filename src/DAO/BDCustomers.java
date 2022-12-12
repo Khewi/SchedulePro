@@ -19,7 +19,9 @@ public class BDCustomers {
         ObservableList<customer> customersList = FXCollections.observableArrayList();
 
         try{
-            String sql = "SELECT * from Customers";
+            String sql = "select c.Customer_ID, c.Customer_Name, c.Address, c.Postal_Code, c.Phone, c.Division_ID, d.Division, co.Country From customers c " +
+                    "INNER JOIN first_level_divisions as d on d.Division_ID = c.Division_ID " +
+                    "LEFT JOIN countries as co ON co.country_ID = d.COUNTRY_ID;";
             PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
@@ -30,8 +32,10 @@ public class BDCustomers {
                 String postalCode = rs.getString("Postal_Code");
                 String phone = rs.getString("Phone");
                 int divisionID = rs.getInt("Division_ID");
+                String division = rs.getString("Division");
+                String country = rs.getString("Country");
 
-                customer a = new customer(customerID, customerName, address, postalCode, phone, divisionID);
+                customer a = new customer(customerID, customerName, address, postalCode, phone, divisionID, division, country);
                 customersList.add(a);
 
             }

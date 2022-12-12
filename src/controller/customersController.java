@@ -53,6 +53,9 @@ public class customersController implements Initializable {
         postalCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         phoneNumCol.setCellValueFactory(new PropertyValueFactory<>("phoneNum"));
 
+        countryCol.setCellValueFactory(new PropertyValueFactory<>("countryName"));
+        stateFLDCol.setCellValueFactory(new PropertyValueFactory<>("division"));
+
         customerTable.setItems(allCustomers);
     }
 

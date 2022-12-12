@@ -16,6 +16,8 @@ public class customer {
     private String postalCode;
     private String phoneNum;
     private int divisionID;
+    private String division;
+    private String countryName;
 
 
     public customer(){
@@ -43,6 +45,19 @@ public class customer {
         setCustomerID(ID);
         setCustomerName(name);
     };
+
+
+
+    public customer(int customerID, String customerName, String address, String postalCode, String phoneNum, int divisionID, String division, String countryName){
+        this.customerID = customerID;
+        this.customerName = customerName;
+        this.address = address;
+        this.postalCode = postalCode;
+        this.phoneNum = phoneNum;
+        this.divisionID = divisionID;
+        this.division = division;
+        this.countryName = countryName;
+    }
     /**
      * getter function for customerID.
      * @return customerID
@@ -152,6 +167,33 @@ public class customer {
     public ObservableList<customer> getAllCustomers(){
         ObservableList<customer> allcust = BDCustomers.getCustomers();
         return allcust;
+    }
+
+    /**
+     * getter method for division variable in customer class.
+     * @return
+     */
+    public String getDivision() {return division;}
+
+    /**
+     * setter method for division variable in customer class.
+     * @param division
+     */
+    public void setDivision(String division) {
+        this.division = division;
+    }
+
+    /**
+     * Setter method for countryName in customer class.
+     * @param countryName
+     * @return
+     */
+    public void setCountryName(String countryName){
+        this.countryName = countryName;
+    }
+
+    public String getCountryName(){
+        return countryName;
     }
 
     /**
