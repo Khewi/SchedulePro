@@ -2,7 +2,6 @@ package model;
 
 
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 
 import java.util.Optional;
@@ -43,5 +42,12 @@ public class info {
         else {
             return false;
         }
+    }
+
+    public static void inform(String title, String content){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

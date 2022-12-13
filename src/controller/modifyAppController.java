@@ -84,7 +84,6 @@ public class modifyAppController implements Initializable {
         locationTF.setText(String.valueOf(loadAppointment.getAppLocation()));
         typeTF.setText(String.valueOf(loadAppointment.getAppType()));
 
-
         datePicker.setValue(loadAppointment.getAppStart().toLocalDate());
         startTimeComboBox.setValue((loadAppointment.getAppStart().toLocalTime()));
         endTimeComboBox1.setValue(loadAppointment.getAppEnd().toLocalTime());

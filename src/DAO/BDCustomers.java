@@ -14,7 +14,6 @@ import java.sql.SQLException;
 public class BDCustomers {
 
 
-    //Not working
     public static ObservableList<customer> getCustomers() {
         ObservableList<customer> customersList = FXCollections.observableArrayList();
 

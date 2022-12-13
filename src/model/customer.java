@@ -4,6 +4,8 @@ package model;
 import DAO.BDCustomers;
 import javafx.collections.ObservableList;
 
+import java.lang.constant.Constable;
+
 /***
  * This class contains getter and setter functions for customers.
  */
@@ -192,7 +194,7 @@ public class customer {
         this.countryName = countryName;
     }
 
-    public String getCountryName(){
+    public Constable getCountryName(){
         return countryName;
     }
 

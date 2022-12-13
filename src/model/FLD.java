@@ -8,6 +8,7 @@ public class FLD {
     private int divisionID;
     private String divisionName;
     private int countryID;
+    private String countryName;
 
 
     /***
@@ -16,13 +17,16 @@ public class FLD {
      * @param divisionName
      * @param countryID
      */
-    public FLD(int divisionID, String divisionName, int countryID) {
+    public FLD(int divisionID, String divisionName, int countryID, String countryName) {
         this.divisionID = divisionID;
         this.divisionName = divisionName;
         this.countryID = countryID;
+        this.countryName = countryName;
     }
 
-
+    public FLD(int divisionID){
+        this.divisionID = divisionID;
+    }
     /**
      * getter function for divisionID.
      * @return divisionID
@@ -74,8 +78,26 @@ public class FLD {
     }
 
 
+    /**
+     * Setter method for countryName in FLD class.
+     * @param countryName
+     */
+    public void setCountryName(String countryName){
+        this.countryName = countryName;
+    }
 
+    /**
+     * getter method for countryName from FLD class.
+     * @return
+     */
+    public String getCountryName(){
+        return countryName;
+    }
 
+    @Override
+    public String toString(){
+        return (divisionID + " " +divisionName);
+    }
 
 
 }

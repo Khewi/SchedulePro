@@ -79,12 +79,12 @@
                   <Font size="14.0" />
                </font>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Country" GridPane.rowIndex="3">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Country:" GridPane.rowIndex="3">
                <font>
                   <Font size="14.0" />
                </font>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="First Level Divison:" GridPane.rowIndex="4">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="State:" wrappingWidth="71.1376953125" GridPane.rowIndex="4">
                <font>
                   <Font size="14.0" />
                </font>
@@ -101,7 +101,7 @@
             </Text>
             <TextField fx:id="phoneNumTF" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <TextField fx:id="postalCodeTF" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <ComboBox fx:id="countryCombobox" prefHeight="25.0" prefWidth="167.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ComboBox fx:id="countryCombobox" onAction="#onActionSetFLD" prefHeight="25.0" prefWidth="167.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <ComboBox fx:id="FLDCombobox" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
          </children>
       </GridPane>

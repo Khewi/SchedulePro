@@ -212,11 +212,12 @@ public class allAppsController implements Initializable {
                 allAppsList.removeAll();
                 allAppsList = DBAppointments.getAllApps();
                 appTable.setItems(allAppsList);
+                info.inform("DELETE APPOINTMENT", "Appointment " + appID + " has been deleted from the system.");
             } else {
                 System.out.println("Appointment Delete canceled"); }
         }
         else {
-                info.error("Delete Apppointment", "Nothing selected. \n Please select an appointment to delete.");
+                info.error("Delete Appointment", "Nothing selected. \n Please select an appointment to delete.");
         }
         }
 

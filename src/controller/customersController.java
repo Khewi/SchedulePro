@@ -1,22 +1,28 @@
 package controller;
 
 import DAO.BDCustomers;
+import DAO.DBAppointments;
+import database.DBConnection;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import model.appointment;
 import model.customer;
+import model.info;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /***
@@ -39,12 +45,11 @@ public class customersController implements Initializable {
     public Button backButton;
     public TableView customerTable;
     public TableColumn stateFLDCol;
-
+    ObservableList<customer> allCustomers = BDCustomers.getCustomers();
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<customer> allCustomers = BDCustomers.getCustomers();
 
 
         cusIDcol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
@@ -69,7 +74,7 @@ public class customersController implements Initializable {
         Parent cust = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
         System.out.println("customers.fxml path recognized");
         Scene scene = new Scene(cust);
-        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Customers");
         stage.setScene(scene);
         stage.show();
@@ -85,7 +90,7 @@ public class customersController implements Initializable {
         Parent apps = FXMLLoader.load(getClass().getResource("/view/allApps.fxml"));
         System.out.println("allApps.fxml path recognized");
         Scene scene = new Scene(apps);
-        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Appointments");
         stage.setScene(scene);
         stage.show();
@@ -100,7 +105,7 @@ public class customersController implements Initializable {
         Parent login = FXMLLoader.load(getClass().getResource("/view/reports.fxml"));
         System.out.println("reports.fxml path recognized");
         Scene scene = new Scene(login);
-        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Reports Dashboard");
         stage.setScene(scene);
         stage.show();
@@ -117,7 +122,7 @@ public class customersController implements Initializable {
         Parent login = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
         System.out.println("login.fxml path recognized");
         Scene scene = new Scene(login);
-        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Schedule Pro");
         stage.setScene(scene);
         stage.show();
@@ -133,7 +138,7 @@ public class customersController implements Initializable {
         Parent apps = FXMLLoader.load(getClass().getResource("/view/addCustomer.fxml"));
         System.out.println("addCustomer.fxml path recognized");
         Scene scene = new Scene(apps);
-        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("New Customer");
         stage.setScene(scene);
         stage.show();
@@ -144,13 +149,18 @@ public class customersController implements Initializable {
      * @param actionEvent
      */
     public void onActionModifyCustomer(ActionEvent actionEvent) throws IOException {
-        System.out.println("Modify button clicked");
-        Parent login = FXMLLoader.load(getClass().getResource("/view/modifyCustomer.fxml"));
-        System.out.println("modifyCustomer.fxml path recognized");
-        Scene scene = new Scene(login);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/view/modifyCustomer.fxml"));
+        loader.load();
+
+        modifyCustomerController mCController = loader.getController();
+        mCController.sendCustomer((customer) customerTable.getSelectionModel().getSelectedItem());
+
+
         Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Modify Customer");
-        stage.setScene(scene);
+        Parent scene = loader.getRoot();
+        stage.setScene(new Scene(scene));
         stage.show();
     }
 
@@ -160,6 +170,52 @@ public class customersController implements Initializable {
      * @param actionEvent
      */
     public void onActionDeleteCustomer(ActionEvent actionEvent) {
+        if (customerTable.getSelectionModel().getSelectedItem() != null) {
+            ObservableList<appointment> allAppsCheck = DBAppointments.getAllApps();
+            customer deleteCustomer = (customer) customerTable.getSelectionModel().getSelectedItem();
+            int cusId = deleteCustomer.getCustomerID();
+            System.out.println("Customer to be deleted: " + cusId + " " + deleteCustomer.getCustomerName());
+            AtomicBoolean hasConflict = new AtomicBoolean(false);
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("DELETE APPOINTMENT");
+            alert.setHeaderText("Do you want to delete " + deleteCustomer.getCustomerName() + " from the system?");
+            alert.setContentText("Click OK to delete customer.");
+            Optional<ButtonType> action = alert.showAndWait();
+            if (action.get() == ButtonType.OK) {
+                allAppsCheck.forEach(appointment -> {
+                    if (appointment.getCustomerID() == cusId) {
+                        hasConflict.set(true);
+                        info.error("ERROR", "Unable to delete customer. There are still active appointments for this customer. Please delete the all appointments for this customer before trying again.");
+                    } else {
+                        hasConflict.set(false);
+                        try {
+                            deleteCustomer(cusId);
+                            allCustomers.removeAll();
+                            allCustomers = BDCustomers.getCustomers();
+                            customerTable.setItems(allCustomers);
+
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            } else {
+                System.out.println("Customer delete canceled.");
+            }
+        }else{
+                info.error("DELETE CUSTOMER", "Nothing selected. \n Please select a customer to delete.");
+            }
+        }
+
+
+
+    private void deleteCustomer(int customerID) throws SQLException {
+        String sql = "DELETE FROM CUSTOMERS WHERE Customer_ID = ?";
+        PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+        ps.setInt(1, customerID);
+        ps.executeUpdate();
+        System.out.println("Customer " + customerID + " has been deleted from the database.");
     }
 
     /***

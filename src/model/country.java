@@ -51,4 +51,10 @@ public class country {
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }
+
+    public String toString(){
+        return (countryID + " " +countryName);
+    }
+
+
 }
