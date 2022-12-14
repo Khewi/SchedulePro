@@ -240,7 +240,6 @@ public class addCustomerController implements Initializable {
         ObservableList<String> US = FXCollections.observableArrayList();
         ObservableList<String> Canada = FXCollections.observableArrayList();
 
-        // Lambda #1
         allDivisionsList.forEach(FLD -> {
             if(FLD.getCountryID() == 1) {
                 US.add(FLD.getDivisionName());

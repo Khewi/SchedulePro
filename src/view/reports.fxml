@@ -41,57 +41,79 @@
                </VBox.margin>
             </Button>
          </children></VBox>
-      <Text layoutX="364.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reports Dashboard">
+      <Text layoutX="367.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reports Dashboard">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Text>
-      <Text layoutX="156.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select month:">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Text>
-      <HBox layoutX="157.0" layoutY="51.0" prefHeight="34.0" prefWidth="612.0">
-         <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select a report:">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Text>
-            <RadioButton mnemonicParsing="false" text="total number of customer by First level division" />
-            <RadioButton mnemonicParsing="false" text="contact schedule" />
-            <RadioButton mnemonicParsing="false" text="Total number of customers by type and month" />
-         </children>
-      </HBox>
-      <ComboBox layoutX="433.0" layoutY="94.0" prefWidth="150.0" />
-      <TabPane layoutX="150.0" layoutY="132.0" prefHeight="244.0" prefWidth="596.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutX="150.0" layoutY="58.0" prefHeight="318.0" prefWidth="627.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="contactReport" text="Contact Schedule">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #D4F1F4;">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #E6E6FA;">
                      <children>
-                        <TableView layoutX="14.0" layoutY="8.0" prefHeight="200.0" prefWidth="560.0">
+                        <TableView fx:id="scheduleTable" layoutX="26.0" layoutY="75.0" prefHeight="200.0" prefWidth="576.0">
                           <columns>
-                            <TableColumn prefWidth="75.0" text="C1" />
-                            <TableColumn prefWidth="75.0" text="C2" />
+                            <TableColumn fx:id="appIdCol" prefWidth="55.0" text="App ID" />
+                            <TableColumn fx:id="titleCol" prefWidth="105.0" text="Title" />
+                              <TableColumn fx:id="descrCol" prefWidth="100.0" text="Description" />
+                              <TableColumn fx:id="typeCol" prefWidth="75.0" text="Type" />
+                              <TableColumn fx:id="startCol" prefWidth="75.0" text="Start Time" />
+                              <TableColumn fx:id="endCol" prefWidth="75.0" text="End Time" />
+                              <TableColumn fx:id="custID" prefWidth="78.0" text="Customer ID" />
                           </columns>
                         </TableView>
+                        <ComboBox fx:id="contactCombo" layoutX="26.0" layoutY="38.0" onAction="#onActionLoadSchedule" prefWidth="150.0" promptText="Select Contact" />
+                        <Text layoutX="26.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a contact to view their appointment schedule:">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
                      </children></AnchorPane>
             </content>
           </Tab>
           <Tab text="Appointments">
             <content>
-              <AnchorPane fx:id="appReport" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #D4F1F4;">
+              <AnchorPane fx:id="appReport" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #E6E6FA;">
                      <children>
-                        <ComboBox layoutX="46.0" layoutY="38.0" prefWidth="150.0" />
+                        <ComboBox fx:id="monthCombo" layoutX="46.0" layoutY="38.0" prefWidth="150.0" promptText="Select a Month" />
+                        <ComboBox fx:id="typeCombo" layoutX="210.0" layoutY="38.0" prefWidth="150.0" promptText="Select Type" />
+                        <Text layoutX="46.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total number of cusomter appointments:">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="314.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="35.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To view the total number of customer appointments, select the month and type:">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab text="Divisions">
+            <Tab style="fx-background-color: #F6EEE0;" text="Customers">
                <content>
-                  <AnchorPane fx:id="appReport1" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <AnchorPane fx:id="customerPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #E6E6FA;">
                      <children>
-                        <ComboBox layoutX="46.0" layoutY="38.0" prefWidth="150.0" />
+                        <ComboBox fx:id="countryCombo" layoutX="46.0" layoutY="46.0" onAction="#onActionLoadDivs" prefHeight="25.0" prefWidth="150.0" promptText="Select Country" />
+                        <Text layoutX="22.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To view all of the customers in a specific country or state, select from the options below:">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <TableView fx:id="countryTable" layoutX="280.0" layoutY="38.0" prefHeight="236.0" prefWidth="300.0">
+                          <columns>
+                            <TableColumn fx:id="custCol" prefWidth="100.0" text="Customer" />
+                            <TableColumn fx:id="countryID" prefWidth="100.0" text="Country" />
+                              <TableColumn fx:id="divCol" prefWidth="100.0" text="Division" />
+                          </columns>
+                        </TableView>
+                        <ComboBox fx:id="divCombo" layoutX="46.0" layoutY="83.0" onAction="#onActionSetCountryTable" prefWidth="150.0" promptText="Select State" />
                      </children>
                   </AnchorPane>
                </content>

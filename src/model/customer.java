@@ -48,7 +48,11 @@ public class customer {
         setCustomerName(name);
     };
 
-
+    public customer(String name, String division, String countryName){
+        this.customerName = name;
+        this.division = division;
+        this.countryName = countryName;
+    }
 
     public customer(int customerID, String customerName, String address, String postalCode, String phoneNum, int divisionID, String division, String countryName){
         this.customerID = customerID;

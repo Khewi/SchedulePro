@@ -74,9 +74,6 @@ public class modifyAppController implements Initializable {
     public void sendAppointment(appointment appointment){
         appointment loadAppointment = appointment;
 
-        int userID = loadAppointment.getUserID();
-        int contactId = loadAppointment.getContactID();
-
 
         IDTF.setText(String.valueOf(loadAppointment.getAppID()));
         titleTF.setText(String.valueOf(loadAppointment.getAppTitle()));
@@ -88,9 +85,8 @@ public class modifyAppController implements Initializable {
         startTimeComboBox.setValue((loadAppointment.getAppStart().toLocalTime()));
         endTimeComboBox1.setValue(loadAppointment.getAppEnd().toLocalTime());
 
-
-
     }
+
 
 
 
