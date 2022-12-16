@@ -162,8 +162,6 @@ public class customersController implements Initializable {
         Parent scene = loader.getRoot();
         stage.setScene(new Scene(scene));
         stage.show();
-
-        info.inform("Validate Form", "Please validate both the Country and State prior to saving customer.");
     }
 
 

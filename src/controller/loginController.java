@@ -2,6 +2,7 @@ package controller;
 
 
 import DAO.DBAppointments;
+import com.google.protobuf.Message;
 import database.DBConnection;
 
 import javafx.collections.FXCollections;
@@ -81,6 +82,7 @@ public class loginController implements Initializable {
      * @throws IOException
      */
     public void onActionLogin(ActionEvent actionEvent) throws IOException, SQLException {
+        ResourceBundle rb = ResourceBundle.getBundle("language/language");
 
         String usernameText = userField.getText();
         String passwordText = passField.getText();
@@ -139,6 +141,7 @@ public class loginController implements Initializable {
     }
         else if (userField.getText().isEmpty() || passField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
+            System.out.println(rb.getString("Error"));
             alert.setTitle(rb.getString("Error"));
             alert.setContentText(rb.getString("Message"));
             alert.showAndWait();

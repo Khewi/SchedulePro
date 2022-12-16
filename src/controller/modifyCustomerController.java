@@ -267,8 +267,12 @@ public class modifyCustomerController implements Initializable {
     }
 
     private boolean allFieldsValid(){
-        if(nameTF.getText().isEmpty() || addressTF.getText().isEmpty() || postalCodeTF.getText().isEmpty() ||
-                phoneNumTF.getText().isEmpty() || countryCombobox.getSelectionModel().isEmpty() || FLDCombobox.getSelectionModel().isEmpty()){
+        if (countryCombobox.getSelectionModel().isEmpty()) {
+            info.error("Validate Form", "Please validate the country and state of the customer in the field before saving.");
+            return false;
+        }
+        else if(nameTF.getText().isEmpty() || addressTF.getText().isEmpty() || postalCodeTF.getText().isEmpty() ||
+                phoneNumTF.getText().isEmpty() || FLDCombobox.getSelectionModel().isEmpty()) {
             info.error("ERROR", "Unable to save this customer. Please ensure there is a value in all fields before saving customer information.");
             return false;
         }else{

@@ -53,6 +53,16 @@ public class reportsController implements Initializable {
     ObservableList<country> allCountries = DBCountries.getCountries();
     ObservableList<FLD> allDiv = DBDivision.getDivision();
 
+
+    /**
+     * This function initializes the report scene. It loads the combo box data for the contact and country. It set the appointment table columns.
+     * Lambda #2
+     * This lambda was built to take the above data list and turn all String values into an uppercase list.
+     * The list needs to contain all uppercased letters to equal the same String format as the month that is taken from the Start dates in the appointment.
+     * To return the appropriate number of appointments by type in that month, the list needs to contain all uppercase values to equal the same value the time API functions use to get the month.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contactCombo.setItems(allContacts);
@@ -61,12 +71,7 @@ public class reportsController implements Initializable {
         ObservableList<String> lc = FXCollections.observableArrayList();
         lc.addAll("January","February", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
 
-        /**
-         * Lambda #2
-         * This lambda was built to take the above data list and turn all String values into an uppercase list.
-         * The list needs to contain all uppercased letters to equal the same String format as the month that is taken from the Start dates in the appointment.
-         * To return the appropriate number of appointments by type in that month, the list needs to contain all uppercase values to equal the same value the time API functions use to get the month.
-         */
+        //Lambda #2
         Stream<String> stream = lc.stream().map(s -> s.toUpperCase());
         // Collect the elements of the Stream into a new ObservableList
         ObservableList<String> uppercaseList = stream.collect(Collectors.toCollection(FXCollections::observableArrayList));
@@ -89,7 +94,10 @@ public class reportsController implements Initializable {
 
     }
 
-
+    /**
+     * This method loads the appointment schedule for the selected contact in the schedule pane of the reports dashboard.
+     * @param actionEvent
+     */
     public void onActionLoadSchedule(ActionEvent actionEvent) {
         ObservableList<appointment> appInfor = FXCollections.observableArrayList();
 
@@ -106,6 +114,10 @@ public class reportsController implements Initializable {
         }
     }
 
+    /**
+     * This method sets the country table to show the customers, country, and division based on the selected items from the combo boxes.
+     * @param actionEvent
+     */
     public void onActionSetCountryTable(ActionEvent actionEvent) {
         ObservableList<customer> allCusts = BDCustomers.getCustomers();
 
@@ -130,7 +142,13 @@ public class reportsController implements Initializable {
         countryTable.setItems(custDivList);
     }
 
-
+    /**
+     * This method loads the country information to display in the combo box in the customer tab of the reports.
+     * Lambda #1
+     * The Lambada expression in this method is using the .ForEach expression to iterate through the allDiv observable list to check the country ID.
+     * It is validating the country name against the country ID to set the values for the Country report int the report dashboard on the report scene.
+     * @param actionEvent
+     */
     public void onActionLoadDivs(ActionEvent actionEvent) {
         String countrySelection = String.valueOf(countryCombo.getSelectionModel().getSelectedItem());
 
@@ -139,10 +157,6 @@ public class reportsController implements Initializable {
         ObservableList<String> Canada = FXCollections.observableArrayList();
 
         // Lambda #1
-        /**
-         *This Lambada expression is using the .ForEach expression to iterate through the allDiv observable list to check the country ID.
-         *It is validating the country name against the country ID to set the values for the Country report int the report dashboard on the report scene.
-         */
         allDiv.forEach(FLD -> {
             if (FLD.getCountryID() == 1) {
                 US.add(FLD.getDivisionName());
@@ -230,6 +244,10 @@ public class reportsController implements Initializable {
         stage.show();
     }
 
+    /**
+     * This method loads the total number of customers that matches the selected type and month in the appointments tab.
+     * @param actionEvent
+     */
     public void onActionLoadTotal(ActionEvent actionEvent) {
 
         String selectedType = typeCombo.getValue();
@@ -246,20 +264,18 @@ public class reportsController implements Initializable {
         totalText.setText(String.valueOf(total));
     }
 
+    /**
+     *  This method selects and displays the appointment type in the type combo box.
+     * @param event
+     */
     public void onSelectionAppTab(Event event) {
         ObservableList<String> appType = FXCollections.observableArrayList();
        String type;
-
-
 
        for(appointment appT: allApps){
           type = appT.getAppType();
           appType.add(type);
           }
-
-
-
-
 
         String[] distinctItems = appType.stream().distinct().toArray(String[]::new);
         ObservableList<String> somethingUnique = FXCollections.observableArrayList(distinctItems);
