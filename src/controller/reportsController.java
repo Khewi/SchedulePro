@@ -19,6 +19,8 @@ import model.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This controller class hold the action functions for the reports screen.
@@ -50,15 +52,25 @@ public class reportsController implements Initializable {
     ObservableList<appointment> allApps = DBAppointments.getAllApps();
     ObservableList<country> allCountries = DBCountries.getCountries();
     ObservableList<FLD> allDiv = DBDivision.getDivision();
-    ObservableList<String> monthList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contactCombo.setItems(allContacts);
         countryCombo.setItems(allCountries);
 
-        monthList.addAll("JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER");
-        monthCombo.setItems(monthList);
+        ObservableList<String> lc = FXCollections.observableArrayList();
+        lc.addAll("January","February", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
+
+        /**
+         * Lambda #2
+         * This lambda was built to take the above data list and turn all String values into an uppercase list.
+         * The list needs to contain all uppercased letters to equal the same String format as the month that is taken from the Start dates in the appointment.
+         * To return the appropriate number of appointments by type in that month, the list needs to contain all uppercase values to equal the same value the time API functions use to get the month.
+         */
+        Stream<String> stream = lc.stream().map(s -> s.toUpperCase());
+        // Collect the elements of the Stream into a new ObservableList
+        ObservableList<String> uppercaseList = stream.collect(Collectors.toCollection(FXCollections::observableArrayList));
+        monthCombo.setItems(uppercaseList);
 
 
 
@@ -128,7 +140,7 @@ public class reportsController implements Initializable {
 
         // Lambda #1
         /**
-         * This Lambada expression is using the .ForEach expression to iterate through the allDiv observable list to check the country ID.
+         *This Lambada expression is using the .ForEach expression to iterate through the allDiv observable list to check the country ID.
          *It is validating the country name against the country ID to set the values for the Country report int the report dashboard on the report scene.
          */
         allDiv.forEach(FLD -> {
@@ -244,6 +256,10 @@ public class reportsController implements Initializable {
           type = appT.getAppType();
           appType.add(type);
           }
+
+
+
+
 
         String[] distinctItems = appType.stream().distinct().toArray(String[]::new);
         ObservableList<String> somethingUnique = FXCollections.observableArrayList(distinctItems);

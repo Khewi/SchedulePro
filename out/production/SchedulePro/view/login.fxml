@@ -7,14 +7,14 @@
 
 <AnchorPane prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.loginController">
    <children>
-      <Text layoutX="133.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule Pro">
+      <Text fx:id="scheduleProlabel" layoutX="133.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule Pro">
          <font>
             <Font name="System Bold" size="22.0" />
          </font>
       </Text>
       <HBox layoutX="59.0" layoutY="68.0" prefHeight="37.0" prefWidth="290.0">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username: ">
+            <Text fx:id="usernameLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="Username: ">
                <font>
                   <Font size="16.0" />
                </font>
@@ -24,7 +24,7 @@
       </HBox>
       <HBox layoutX="59.0" layoutY="100.0" prefHeight="29.0" prefWidth="234.0">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password: ">
+            <Text fx:id="passwordLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="Password: ">
                <font>
                   <Font size="16.0" />
                </font>
@@ -44,7 +44,7 @@
             </Button>
          </children>
       </HBox>
-      <Text layoutX="59.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zone ID: ">
+      <Text fx:id="zoneIDLabel" layoutX="59.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zone ID: ">
          <font>
             <Font size="16.0" />
          </font>

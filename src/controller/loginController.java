@@ -64,12 +64,14 @@ public class loginController implements Initializable {
 
         ResourceBundle rb = ResourceBundle.getBundle("language/language");
 
-        zoneIDLabel.setText(rb.getString("Zone ID"));
+        scheduleProlabel.setText(rb.getString("Title"));
+        usernameLabel.setText(rb.getString("Username"));
         passwordLabel.setText(rb.getString("Password"));
-        usernameLabel.setText("Username");
-        scheduleProlabel.setText("Schedule Pro");
-        loginButton.setText("Login");
-        exitButton.setText("Exit");
+        loginButton.setText(rb.getString("Login"));
+        exitButton.setText(rb.getString("Exit"));
+        zoneIDLabel.setText("Zone");
+
+
     }
 
 
@@ -137,15 +139,15 @@ public class loginController implements Initializable {
     }
         else if (userField.getText().isEmpty() || passField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(rb.getString("Input Error"));
-            alert.setContentText(rb.getString("Both fields must have a username and password entered. Please enter user data in both fields."));
+            alert.setTitle(rb.getString("Error"));
+            alert.setContentText(rb.getString("Message"));
             alert.showAndWait();
             activityLog(u.getUsername(), false);
 
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(rb.getString("Input Error"));
-            alert.setContentText(rb.getString("Please enter a valid username or password."));
+            alert.setTitle(rb.getString("Error"));
+            alert.setContentText(rb.getString("SecMessage"));
             alert.showAndWait();
             activityLog(u.getUsername(), false);
         }
