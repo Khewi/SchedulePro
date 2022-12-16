@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -42,8 +43,12 @@ public class loginController implements Initializable {
     public Button exitButton;
     public PasswordField passField;
     public TextField userField;
+    public Text zoneIDLabel;
+    public Text passwordLabel;
+    public Text usernameLabel;
+    public Text scheduleProlabel;
     ObservableList<appointment> appReminderList = DBAppointments.getAllApps();
-
+    ResourceBundle rb;
 
 
     @Override
@@ -57,7 +62,15 @@ public class loginController implements Initializable {
         genZoneTxt.setText(String.valueOf(zone));
 
 
-       }
+        ResourceBundle rb = ResourceBundle.getBundle("language/language");
+
+        zoneIDLabel.setText(rb.getString("Zone ID"));
+        passwordLabel.setText(rb.getString("Password"));
+        usernameLabel.setText("Username");
+        scheduleProlabel.setText("Schedule Pro");
+        loginButton.setText("Login");
+        exitButton.setText("Exit");
+    }
 
 
     /***
@@ -123,11 +136,17 @@ public class loginController implements Initializable {
 
     }
         else if (userField.getText().isEmpty() || passField.getText().isEmpty()) {
-            info.error("Input Error", "Both fields must have a username and password entered. Please enter user data in both fields.");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(rb.getString("Input Error"));
+            alert.setContentText(rb.getString("Both fields must have a username and password entered. Please enter user data in both fields."));
+            alert.showAndWait();
             activityLog(u.getUsername(), false);
 
         } else {
-            info.error("Input error", "Please enter a valid username or password.");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(rb.getString("Input Error"));
+            alert.setContentText(rb.getString("Please enter a valid username or password."));
+            alert.showAndWait();
             activityLog(u.getUsername(), false);
         }
 

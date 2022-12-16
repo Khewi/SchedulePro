@@ -27,6 +27,11 @@ public class contact {
     }
 
 
+    public contact(int contactID, String contactName){
+        this.contactID = contactID;
+        this.contactName = contactName;
+    }
+
     /**
      * getter function for contactID.
      * @return contactID

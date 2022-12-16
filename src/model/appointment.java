@@ -5,7 +5,6 @@ package model;
 import DAO.DBAppointments;
 import javafx.collections.ObservableList;
 
-import java.security.PublicKey;
 import java.time.LocalDateTime;
 
 /**
@@ -225,6 +224,9 @@ public class appointment {
         ObservableList<appointment> allApps = DBAppointments.getAllApps();
         return allApps;
     }
+
+
+
 
     public user setUser(user user){
         this.user = user;

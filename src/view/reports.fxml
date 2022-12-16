@@ -50,7 +50,7 @@
         <tabs>
           <Tab fx:id="contactReport" text="Contact Schedule">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #E6E6FA;">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF;">
                      <children>
                         <TableView fx:id="scheduleTable" layoutX="26.0" layoutY="75.0" prefHeight="200.0" prefWidth="576.0">
                           <columns>
@@ -72,18 +72,18 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-          <Tab text="Appointments">
+          <Tab fx:id="appTab" onSelectionChanged="#onSelectionAppTab" text="Appointments">
             <content>
-              <AnchorPane fx:id="appReport" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #E6E6FA;">
+              <AnchorPane fx:id="appReport" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF;">
                      <children>
                         <ComboBox fx:id="monthCombo" layoutX="46.0" layoutY="38.0" prefWidth="150.0" promptText="Select a Month" />
-                        <ComboBox fx:id="typeCombo" layoutX="210.0" layoutY="38.0" prefWidth="150.0" promptText="Select Type" />
-                        <Text layoutX="46.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total number of cusomter appointments:">
+                        <ComboBox fx:id="typeCombo" layoutX="210.0" layoutY="38.0" onAction="#onActionLoadTotal" prefWidth="150.0" promptText="Select Type" />
+                        <Text layoutX="46.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total number of customer appointments:">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Text>
-                        <Text layoutX="314.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                        <Text fx:id="totalText" layoutX="314.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -96,12 +96,12 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab style="fx-background-color: #F6EEE0;" text="Customers">
+            <Tab style="fx-background-color: #FFFFFF;" text="Customers">
                <content>
-                  <AnchorPane fx:id="customerPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #E6E6FA;">
+                  <AnchorPane fx:id="customerPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF;">
                      <children>
                         <ComboBox fx:id="countryCombo" layoutX="46.0" layoutY="46.0" onAction="#onActionLoadDivs" prefHeight="25.0" prefWidth="150.0" promptText="Select Country" />
-                        <Text layoutX="22.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To view all of the customers in a specific country or state, select from the options below:">
+                        <Text fx:id="descText" layoutX="22.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To view all of the customers in a specific country or state, select from the options below:">
                            <font>
                               <Font size="14.0" />
                            </font>

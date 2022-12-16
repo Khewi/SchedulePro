@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import model.*;
 
 import java.io.IOException;
+import java.lang.constant.Constable;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,6 +44,7 @@ public class modifyCustomerController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         countryCombobox.setItems(countriesList);
 
+
     }
 
 
@@ -56,6 +58,22 @@ public class modifyCustomerController implements Initializable {
         phoneNumTF.setText(loadCust.getPhoneNum());
 
         FLDCombobox.setValue(loadCust.getDivision());
+
+        Constable countryName = loadCust.getCountryName();
+        System.out.println("country name: " + countryName);
+
+
+        ObservableList<country> countries = DBCountries.getCountries();
+        int id =0;
+        country a = null;
+        for(country country: countries){
+            if(countryName.equals(country.getCountryName())){
+                id = country.getCountryID();
+                System.out.println("id= " + id);
+            }
+
+        }
+        countryCombobox.setValue(DBCountries.getCountry(id));
 
     }
 
@@ -135,7 +153,7 @@ public class modifyCustomerController implements Initializable {
             String address = addressTF.getText();
             String postalCode = postalCodeTF.getText();
             String phoneNum = phoneNumTF.getText();
-            String division = FLDCombobox.getValue();
+            String division = FLDCombobox.getSelectionModel().getSelectedItem();
             String country = String.valueOf(countryCombobox.getSelectionModel().getSelectedItem());
 
             int divId = getDivID(division);

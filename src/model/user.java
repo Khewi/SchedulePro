@@ -23,6 +23,12 @@ public class user {
         this.password = password;
     }
 
+
+    public user(int id, String username){
+        this.userID = id;
+        this.username = username;
+    }
+
     /**
      * getter function for userID.
      * @return user ID

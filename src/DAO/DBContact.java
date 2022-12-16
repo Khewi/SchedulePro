@@ -34,4 +34,30 @@ public class DBContact {
         }
         return contactList;
     }
+
+
+    public static contact getContact(int contID) {
+        ObservableList<contact> customersList = FXCollections.observableArrayList();
+        contact a = null;
+
+        try{
+            String sql = "select Contact_ID, Contact_Name From Contacts WHERE Contact_ID = " + contID;
+            PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                int contactID = rs.getInt("Contact_ID");
+                String contactName = rs.getString("Contact_Name");
+
+                a = new contact(contactID, contactName);
+                customersList.add(a);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return a;
+    }
+
+
 }

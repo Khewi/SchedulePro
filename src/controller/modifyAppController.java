@@ -5,7 +5,6 @@ import DAO.BDCustomers;
 import DAO.DBContact;
 import DAO.DBUser;
 import database.DBConnection;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -72,18 +71,22 @@ public class modifyAppController implements Initializable {
      * @param appointment
      */
     public void sendAppointment(appointment appointment){
+
         appointment loadAppointment = appointment;
 
+      userComboBox.setValue(DBUser.getUser(loadAppointment.getUserID()));
+      customerComboBox.setValue(BDCustomers.getCustomer(loadAppointment.getCustomerID()));
+      contactCombobox.setValue(DBContact.getContact(loadAppointment.getContactID()));
 
-        IDTF.setText(String.valueOf(loadAppointment.getAppID()));
-        titleTF.setText(String.valueOf(loadAppointment.getAppTitle()));
-        descriptionTF.setText(String.valueOf(loadAppointment.getAppDescription()));
-        locationTF.setText(String.valueOf(loadAppointment.getAppLocation()));
-        typeTF.setText(String.valueOf(loadAppointment.getAppType()));
+      IDTF.setText(String.valueOf(loadAppointment.getAppID()));
+      titleTF.setText(String.valueOf(loadAppointment.getAppTitle()));
+      descriptionTF.setText(String.valueOf(loadAppointment.getAppDescription()));
+      locationTF.setText(String.valueOf(loadAppointment.getAppLocation()));
+      typeTF.setText(String.valueOf(loadAppointment.getAppType()));
 
-        datePicker.setValue(loadAppointment.getAppStart().toLocalDate());
-        startTimeComboBox.setValue((loadAppointment.getAppStart().toLocalTime()));
-        endTimeComboBox1.setValue(loadAppointment.getAppEnd().toLocalTime());
+      datePicker.setValue(loadAppointment.getAppStart().toLocalDate());
+      startTimeComboBox.setValue((loadAppointment.getAppStart().toLocalTime()));
+      endTimeComboBox1.setValue(loadAppointment.getAppEnd().toLocalTime());
 
     }
 
@@ -95,7 +98,7 @@ public class modifyAppController implements Initializable {
      */
     private void generateTimeList(){
         LocalTime start = LocalTime.of(8, 0,0);
-        LocalTime end = LocalTime.of(17, 0, 0);
+        LocalTime end = LocalTime.of(22, 0, 0);
 
         while (start.isBefore(end.plusMinutes(1))){
             startTimeComboBox.getItems().add(start);

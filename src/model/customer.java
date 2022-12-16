@@ -2,6 +2,7 @@ package model;
 
 
 import DAO.BDCustomers;
+import DAO.DBCountries;
 import javafx.collections.ObservableList;
 
 import java.lang.constant.Constable;
@@ -12,6 +13,7 @@ import java.lang.constant.Constable;
 public class customer {
 
     public static ObservableList getAllCustomers;
+    private int countryID;
     private int customerID;
     private String customerName;
     private String address;
@@ -64,6 +66,8 @@ public class customer {
         this.division = division;
         this.countryName = countryName;
     }
+
+
     /**
      * getter function for customerID.
      * @return customerID
@@ -198,9 +202,14 @@ public class customer {
         this.countryName = countryName;
     }
 
+    /**
+     * getter for country name of customer class.
+     * @return
+     */
     public Constable getCountryName(){
         return countryName;
     }
+
 
     /**
      * This method overrides Oracles default return style of combo box selections for the customer class.

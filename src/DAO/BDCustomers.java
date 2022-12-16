@@ -4,6 +4,7 @@ import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.appointment;
+import model.country;
 import model.customer;
 
 import java.sql.PreparedStatement;
@@ -45,6 +46,29 @@ public class BDCustomers {
     }
 
 
+
+    public static customer getCustomer(int custID) {
+        ObservableList<customer> customersList = FXCollections.observableArrayList();
+        customer a = null;
+
+        try{
+            String sql = "select Customer_ID, Customer_Name From customers WHERE Customer_ID = " + custID;
+            PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                int customerID = rs.getInt("Customer_ID");
+                String customerName = rs.getString("Customer_Name");
+
+                a = new customer(customerID, customerName);
+                customersList.add(a);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return a;
+    }
 
 
 }
