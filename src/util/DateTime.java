@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public class dateTime {
+public class DateTime {
     /**
      * This method checks for the date
      * @return date

@@ -4,7 +4,6 @@ import DAO.DBAppointments;
 import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,18 +12,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import model.appointment;
-import model.info;
-import model.user;
+import model.Appointment;
+import model.Info;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -32,7 +27,7 @@ import java.util.ResourceBundle;
 /***
  * This controller class holds the methods required for the appointments scene.
  */
-public class allAppsController implements Initializable {
+public class AllAppsController implements Initializable {
     public RadioButton monthRB;
     public RadioButton weekRB;
     public RadioButton allRB;
@@ -57,7 +52,7 @@ public class allAppsController implements Initializable {
     public Button reportsButton;
     public Button customersButton;
     public Button appointmentsButton;
-    ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
+    ObservableList<Appointment> allAppsList = DBAppointments.getAllApps();
 
 
     /**
@@ -180,8 +175,8 @@ public class allAppsController implements Initializable {
         loader.setLocation(getClass().getResource("/view/modifyApp.fxml"));
         loader.load();
 
-        modifyAppController mAController = loader.getController();
-        mAController.sendAppointment((appointment) appTable.getSelectionModel().getSelectedItem());
+        ModifyAppController mAController = loader.getController();
+        mAController.sendAppointment((Appointment) appTable.getSelectionModel().getSelectedItem());
 
 
         Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
@@ -198,7 +193,7 @@ public class allAppsController implements Initializable {
      */
     public void onActionDeleteApp(ActionEvent actionEvent) {
         if(appTable.getSelectionModel().getSelectedItem() != null){
-            appointment deleteApp = (appointment) appTable.getSelectionModel().getSelectedItem();
+            Appointment deleteApp = (Appointment) appTable.getSelectionModel().getSelectedItem();
             int appID = deleteApp.getAppID();
             System.out.println(appID + " appointment to be deleted from database");
 
@@ -213,12 +208,12 @@ public class allAppsController implements Initializable {
                 allAppsList.removeAll();
                 allAppsList = DBAppointments.getAllApps();
                 appTable.setItems(allAppsList);
-                info.inform("DELETE APPOINTMENT", "Appointment " + appID + " has been deleted from the system.");
+                Info.inform("DELETE APPOINTMENT", "Appointment " + appID + " has been deleted from the system.");
             } else {
                 System.out.println("Appointment Delete canceled"); }
         }
         else {
-                info.error("Delete Appointment", "Nothing selected. \n Please select an appointment to delete.");
+                Info.error("Delete Appointment", "Nothing selected. \n Please select an appointment to delete.");
         }
         }
 
@@ -261,7 +256,7 @@ public class allAppsController implements Initializable {
      * @param actionEvent
      */
     public void onActionSelectAllApp(ActionEvent actionEvent) {
-        ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
+        ObservableList<Appointment> allAppsList = DBAppointments.getAllApps();
         appTable.setItems(allAppsList);
     }
 
@@ -270,8 +265,8 @@ public class allAppsController implements Initializable {
      * @param actionEvent
      */
     public void onActionWeekApp(ActionEvent actionEvent) {
-        ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
-        ObservableList<appointment> appByWeek = FXCollections.observableArrayList();
+        ObservableList<Appointment> allAppsList = DBAppointments.getAllApps();
+        ObservableList<Appointment> appByWeek = FXCollections.observableArrayList();
 
         LocalDateTime plus1WK = LocalDateTime.now().plusWeeks(1);
         LocalDateTime minus1WK = LocalDateTime.now().minusWeeks(1);
@@ -295,8 +290,8 @@ public class allAppsController implements Initializable {
      * @param actionEvent
      */
     public void onActionMonthApp(ActionEvent actionEvent) {
-        ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
-        ObservableList<appointment> appByMonth = FXCollections.observableArrayList();
+        ObservableList<Appointment> allAppsList = DBAppointments.getAllApps();
+        ObservableList<Appointment> appByMonth = FXCollections.observableArrayList();
 
         LocalDateTime plus1Month = LocalDateTime.now().plusMonths(1);
         LocalDateTime minus1Month= LocalDateTime.now().minusMonths(1);

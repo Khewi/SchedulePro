@@ -4,7 +4,7 @@ package DAO;
 import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.appointment;
+import model.Appointment;
 
 import java.sql.*;
 import java.text.DateFormat;
@@ -32,8 +32,8 @@ public class DBAppointments {
     static ZoneId localZone = ZoneId.systemDefault();
     static ZoneId UTCZone = ZoneId.of("UTC");
 
-    public static ObservableList<appointment> getAllApps() {
-        ObservableList<appointment> appList = FXCollections.observableArrayList();
+    public static ObservableList<Appointment> getAllApps() {
+        ObservableList<Appointment> appList = FXCollections.observableArrayList();
 
         try{
             String sql = "SELECT * from Appointments";
@@ -56,7 +56,7 @@ public class DBAppointments {
                 int userID = rs.getInt("User_ID");
                 int contact_ID = rs.getInt("Contact_ID");
 
-                appointment a = new appointment(appID, title, description,location, type, start, end, customerID, userID, contact_ID);
+                Appointment a = new Appointment(appID, title, description,location, type, start, end, customerID, userID, contact_ID);
                 appList.add(a);
             }
         } catch (SQLException e) {
@@ -66,8 +66,8 @@ public class DBAppointments {
     }
 
 
-    public static ObservableList<appointment> getAppsByUserID(int userID) {
-        ObservableList<appointment> userAppList = FXCollections.observableArrayList();
+    public static ObservableList<Appointment> getAppsByUserID(int userID) {
+        ObservableList<Appointment> userAppList = FXCollections.observableArrayList();
 
         try{
             String sql = "SELECT * from Appointments WHERE User_ID = '"+ userID +"'";
@@ -99,7 +99,7 @@ public class DBAppointments {
                 int userId = rs.getInt("User_ID");
                 int contactID = rs.getInt("Contact_ID");
 
-                appointment b = new appointment(appID, title, description,location, type, UTCStart, UTCEnd, customerID, userId, contactID);
+                Appointment b = new Appointment(appID, title, description,location, type, UTCStart, UTCEnd, customerID, userId, contactID);
                 userAppList.add(b);
 
             }

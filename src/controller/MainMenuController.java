@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 /***
  * This controller class holds the methods required for the main menu scene.
  */
-public class mainMenuController implements Initializable {
+public class MainMenuController implements Initializable {
     public Button reportsButton;
     public Button logoutButton;
     public Button customersButton;

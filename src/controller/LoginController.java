@@ -2,10 +2,8 @@ package controller;
 
 
 import DAO.DBAppointments;
-import com.google.protobuf.Message;
 import database.DBConnection;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -18,9 +16,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.appointment;
-import model.info;
-import model.user;
+import model.Appointment;
+import model.Info;
+import model.User;
+import util.DateTime;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -38,7 +38,7 @@ import java.util.ResourceBundle;
 /***
  * This controller class holds the methods required for the login scene.
  */
-public class loginController implements Initializable {
+public class LoginController implements Initializable {
     public Text genZoneTxt;
     public Button loginButton;
     public Button exitButton;
@@ -48,7 +48,7 @@ public class loginController implements Initializable {
     public Text passwordLabel;
     public Text usernameLabel;
     public Text scheduleProlabel;
-    ObservableList<appointment> appReminderList = DBAppointments.getAllApps();
+    ObservableList<Appointment> appReminderList = DBAppointments.getAllApps();
     ResourceBundle rb;
 
 
@@ -70,7 +70,7 @@ public class loginController implements Initializable {
         passwordLabel.setText(rb.getString("Password"));
         loginButton.setText(rb.getString("Login"));
         exitButton.setText(rb.getString("Exit"));
-        zoneIDLabel.setText("Zone");
+
 
 
     }
@@ -87,12 +87,12 @@ public class loginController implements Initializable {
         String usernameText = userField.getText();
         String passwordText = passField.getText();
         int userID = getUserID(usernameText);
-        user u = new user();
+        User u = new User();
         u.setUserID(userID);
         u.setUsername(usernameText);
         u.setPassword(passwordText);
 
-        ObservableList<appointment> getAllUserApps = DBAppointments.getAppsByUserID(userID);
+        ObservableList<Appointment> getAllUserApps = DBAppointments.getAppsByUserID(userID);
         LocalDateTime appStart;
         LocalDateTime timeNow = LocalDateTime.now();
         LocalDateTime plus15min = LocalDateTime.now().plusMinutes(15);
@@ -115,7 +115,7 @@ public class loginController implements Initializable {
             stage.setResizable(false);
             stage.show();
 
-            for (appointment appointment : getAllUserApps) {
+            for (Appointment appointment : getAllUserApps) {
                 System.out.println("Logged in userID: " + userID);
                 appStart = appointment.getAppStart();
                 getAppID = appointment.getAppID();
@@ -127,14 +127,14 @@ public class loginController implements Initializable {
                     appIn15Min = true;
                     getAppID = appointment.getAppID();
                     appStart = appointment.getAppStart();
-                    info.confirm("Upcoming Appointment", "You have an an upcoming appointment", "Appointment " + getAppID + " starts at " + appStart);
+                    Info.confirm("Upcoming Appointment", "You have an an upcoming appointment", "Appointment " + getAppID + " starts at " + appStart);
                 }
                 if(appIn15Min != false){
                     System.out.println("Upcoming appointment identified" + getAppID + " at " + appStart);
                 }
             }
             if(appIn15Min == false){
-                info.confirm("Time to relax", "You do not have any upcoming appointments.", "");
+                Info.confirm("Time to relax", "You do not have any upcoming appointments.", "");
                 System.out.println("No upcoming appointments found.");
             }
 
@@ -213,12 +213,12 @@ public class loginController implements Initializable {
             BufferedWriter writer = new BufferedWriter(new FileWriter("login_activity.txt", true));
             System.out.println("file created");
             if (attempt == true){
-                writer.append(user + " login attempt was successful at " + util.dateTime.getTime() + "\n");
+                writer.append(user + " login attempt was successful at " + DateTime.getTime() + "\n");
                 System.out.println("New login attempt recorded in login_activity.txt");
                 writer.flush();
                 writer.close();
             } else {
-                writer.append(user + " login attempt failed at " + util.dateTime.getTime() + "\n");
+                writer.append(user + " login attempt failed at " + DateTime.getTime() + "\n");
                 System.out.println("New login attempt recorded in login_activity.txt");
                 writer.flush();
                 writer.close();

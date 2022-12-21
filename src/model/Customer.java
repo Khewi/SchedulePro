@@ -1,16 +1,13 @@
 package model;
 
 
-import DAO.BDCustomers;
-import DAO.DBCountries;
+import DAO.DBCustomers;
 import javafx.collections.ObservableList;
-
-import java.lang.constant.Constable;
 
 /***
  * This class contains getter and setter functions for customers.
  */
-public class customer {
+public class Customer {
 
     public static ObservableList getAllCustomers;
     private int countryID;
@@ -24,7 +21,7 @@ public class customer {
     private String countryName;
 
 
-    public customer(){
+    public Customer(){
         super();
     }
     /**
@@ -36,7 +33,7 @@ public class customer {
      * @param phoneNum
      * @param divisionID
      */
-    public customer(int customerID, String customerName, String address, String postalCode, String phoneNum, int divisionID){
+    public Customer(int customerID, String customerName, String address, String postalCode, String phoneNum, int divisionID){
         this.customerID = customerID;
         this.customerName = customerName;
         this.address = address;
@@ -45,18 +42,18 @@ public class customer {
         this.divisionID = divisionID;
     }
 
-    public customer(int ID, String name){
+    public Customer(int ID, String name){
         setCustomerID(ID);
         setCustomerName(name);
     };
 
-    public customer(String name, String division, String countryName){
+    public Customer(String name, String division, String countryName){
         this.customerName = name;
         this.division = division;
         this.countryName = countryName;
     }
 
-    public customer(int customerID, String customerName, String address, String postalCode, String phoneNum, int divisionID, String division, String countryName){
+    public Customer(int customerID, String customerName, String address, String postalCode, String phoneNum, int divisionID, String division, String countryName){
         this.customerID = customerID;
         this.customerName = customerName;
         this.address = address;
@@ -174,8 +171,8 @@ public class customer {
         this.divisionID = divisionID;
     }
 
-    public ObservableList<customer> getAllCustomers(){
-        ObservableList<customer> allcust = BDCustomers.getCustomers();
+    public ObservableList<Customer> getAllCustomers(){
+        ObservableList<Customer> allcust = DBCustomers.getCustomers();
         return allcust;
     }
 
@@ -206,7 +203,7 @@ public class customer {
      * getter for country name of customer class.
      * @return
      */
-    public Constable getCountryName(){
+    public String getCountryName(){
         return countryName;
     }
 

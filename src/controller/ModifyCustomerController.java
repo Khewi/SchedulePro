@@ -12,9 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import model.FLD;
-import model.country;
-import model.info;
+import model.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,27 +24,68 @@ import java.util.ResourceBundle;
 
 
 /***
- * This controller class holds the methods needed for the add customer scene.
+ * This controller class holds the methods that are needed for the modify customer scene.
  */
-public class addCustomerController implements Initializable {
-    public Button cancelButton;
-    public Button saveButton;
+public class ModifyCustomerController implements Initializable {
     public TextField IDTF;
     public TextField nameTF;
     public TextField addressTF;
     public TextField phoneNumTF;
     public TextField postalCodeTF;
-    public ComboBox<country> countryCombobox;
+    public ComboBox<Country> countryCombobox;
     public ComboBox<String> FLDCombobox;
     public ObservableList<FLD> allDivisionsList = DBDivision.getDivision();
-    public ObservableList<country> countriesList= DBCountries.getCountries();
+    public ObservableList<Country> countriesList= DBCountries.getCountries();
     public ObservableList<String> allFLDNamesList = FXCollections.observableArrayList();
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         countryCombobox.setItems(countriesList);
 
+
+    }
+
+
+    public void sendCustomer(Customer customer){
+        Customer loadCust = customer;
+
+        IDTF.setText(String.valueOf(loadCust.getCustomerID()));
+        nameTF.setText(loadCust.getCustomerName());
+        addressTF.setText(loadCust.getAddress());
+        postalCodeTF.setText(loadCust.getPostalCode());
+        phoneNumTF.setText(loadCust.getPhoneNum());
+
+        countryCombobox.setValue(DBCountries.getCountryByDiv(loadCust.getDivisionID()));
+        FLDCombobox.setValue(loadCust.getDivision());
+
+        String countrySelection = String.valueOf(countryCombobox.getSelectionModel().getSelectedItem());
+
+        ObservableList<String> UK = FXCollections.observableArrayList();
+        ObservableList<String> US = FXCollections.observableArrayList();
+        ObservableList<String> Canada = FXCollections.observableArrayList();
+
+        allDivisionsList.forEach(FLD -> {
+            if(FLD.getCountryID() == 1) {
+                US.add(FLD.getDivisionName());
+            }
+            else if(FLD.getCountryID() == 2){
+                UK.add(FLD.getDivisionName());
+            }
+            else if (FLD.getCountryID() == 3){
+                Canada.add(FLD.getDivisionName());
+            }
+        } );
+
+        if(countrySelection.equals("1 U.S")){
+            FLDCombobox.setItems(US);
+        }
+        else if (countrySelection.equals("3 Canada")){
+            FLDCombobox.setItems(Canada);
+        }
+        else if(countrySelection.equals("2 UK")){
+            FLDCombobox.setItems(UK);
+        }
 
     }
 
@@ -67,11 +106,9 @@ public class addCustomerController implements Initializable {
         stage.show();
     }
 
-
     /***
      * This method loads the appointments scene.
      * @param actionEvent
-     * @throws IOException
      */
     public void onActionAppointmentsScreen(ActionEvent actionEvent) throws IOException {
         System.out.println("Appointments button clicked");
@@ -102,9 +139,8 @@ public class addCustomerController implements Initializable {
 
 
     /***
-     * This method logs the user out of the application.
+     * This method logs the user out of the application and returns to the login scene.
      * @param actionEvent
-     * @throws IOException
      */
     public void onActionLogout(ActionEvent actionEvent) throws IOException {
         System.out.println("Logout button clicked");
@@ -117,46 +153,50 @@ public class addCustomerController implements Initializable {
         stage.show();
     }
 
+
     /***
-     * This method saves the data entered into the text fields.
+     * This method save the customer information to the database.
      * @param actionEvent
      */
     public void onActionSaveCustomer(ActionEvent actionEvent) throws IOException, SQLException {
         if(allFieldsValid() == true) {
+            int custID = Integer.parseInt(IDTF.getText());
             String name = nameTF.getText();
             String address = addressTF.getText();
             String postalCode = postalCodeTF.getText();
             String phoneNum = phoneNumTF.getText();
-            String division = FLDCombobox.getValue();
+            String division = FLDCombobox.getSelectionModel().getSelectedItem();
             String country = String.valueOf(countryCombobox.getSelectionModel().getSelectedItem());
 
             int divId = getDivID(division);
             System.out.println("divID: " + divId);
 
             try{
-            String sql = "INSERT INTO CUSTOMERS(CUSTOMER_NAME, ADDRESS, POSTAL_CODE, PHONE, DIVISION_ID) VALUES( ?, ?, ?, ?, ?)";
-            PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-            ps.setString(1, name);
-            ps.setString(2, address);
-            ps.setString(3, postalCode);
-            ps.setString(4, phoneNum);
-            ps.setInt(5, divId);
-            System.out.println(ps);
+                String sql = "UPDATE CUSTOMERS SET CUSTOMER_NAME=?, ADDRESS=?, POSTAL_CODE=?, PHONE=?, DIVISION_ID=? WHERE CUSTOMER_ID = ?";
+                PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
 
-            int insertSuccess = ps.executeUpdate();
-            if (insertSuccess > 0){
-                System.out.println("Customer " + name + " was inserted into the database successfully");
-                System.out.println("Cancel button clicked");
-                Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
-                System.out.println("customers.fxml path recognized");
-                Scene scene = new Scene(mainMenu);
-                Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
-                stage.setTitle("Customers");
-                stage.setScene(scene);
-                stage.show();
-            }else{
-                System.out.println("Failed to insert " + name + " into the database.");
-            }
+                ps.setString(1, name);
+                ps.setString(2, address);
+                ps.setString(3, postalCode);
+                ps.setString(4, phoneNum);
+                ps.setInt(5, divId);
+                ps.setInt(6, custID);
+                System.out.println(ps);
+
+                int insertSuccess = ps.executeUpdate();
+                if (insertSuccess > 0){
+                    System.out.println("Customer " + name + " was inserted into the database successfully");
+                    System.out.println("Cancel button clicked");
+                    Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
+                    System.out.println("customers.fxml path recognized");
+                    Scene scene = new Scene(mainMenu);
+                    Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+                    stage.setTitle("Customers");
+                    stage.setScene(scene);
+                    stage.show();
+                }else{
+                    System.out.println("Failed to insert " + name + " into the database.");
+                }
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -186,54 +226,13 @@ public class addCustomerController implements Initializable {
             id = d.getDivisionID();
         }
         return id;
-
-    }
-
-    /**
-     * This method checks to ensure all fields are filled for the save method. Returns errors to user if any field is empty.
-     * @return
-     */
-    private boolean allFieldsValid(){
-        if(nameTF.getText().isEmpty() || addressTF.getText().isEmpty() || postalCodeTF.getText().isEmpty() ||
-        phoneNumTF.getText().isEmpty() || countryCombobox.getSelectionModel().isEmpty() || FLDCombobox.getSelectionModel().isEmpty()){
-            info.error("ERROR", "Unable to save this customer. Please ensure there is a value in all fields before saving customer information.");
-            return false;
-        }else{
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("SAVE CUSTOMER");
-            alert.setHeaderText("Do you want to save the current customer?");
-            alert.setContentText("Click OK to save customer.");
-            Optional<ButtonType> input = alert.showAndWait();
-            if (input.get() == ButtonType.OK){
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-    }
-
-    /***
-     * This method cancels modifying the selected customer and returns the user to the customer scene.
-     * @param actionEvent
-     * @throws IOException
-     */
-    public void onActionCancel(ActionEvent actionEvent) throws IOException {
-        System.out.println("Cancel button clicked");
-        Parent mainMenu = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
-        System.out.println("customers.fxml path recognized");
-        Scene scene = new Scene(mainMenu);
-        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
-        stage.setTitle("Customers");
-        stage.setScene(scene);
-        stage.show();
     }
 
     /**
      * This method loads the combo box for the first level division combo box.
      * @param actionEvent
      */
-    public void onActionSetFLD(ActionEvent actionEvent) {
+    public void onActionSetFLDSelectionByCntry(ActionEvent actionEvent) {
         String countrySelection = String.valueOf(countryCombobox.getSelectionModel().getSelectedItem());
 
         ObservableList<String> UK = FXCollections.observableArrayList();
@@ -263,4 +262,42 @@ public class addCustomerController implements Initializable {
         }
 
     }
+
+    /***
+     * This method cancels any loaded information in the text fields and returns the user to the customers scene.
+     * @param actionEvent
+     */
+    public void onActionCancel(ActionEvent actionEvent) throws IOException {
+        System.out.println("Customer button clicked");
+        Parent cust = FXMLLoader.load(getClass().getResource("/view/customers.fxml"));
+        System.out.println("customers.fxml path recognized");
+        Scene scene = new Scene(cust);
+        Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
+        stage.setTitle("Customers");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private boolean allFieldsValid(){
+        if(nameTF.getText().isEmpty() || addressTF.getText().isEmpty() || postalCodeTF.getText().isEmpty() ||
+                phoneNumTF.getText().isEmpty() || FLDCombobox.getValue().isEmpty()) {
+            Info.error("ERROR", "Unable to save this customer. Please ensure there is a value in all fields before saving customer information.");
+            return false;
+        }else{
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("SAVE CUSTOMER");
+            alert.setHeaderText("Do you want to save the current customer?");
+            alert.setContentText("Click OK to save customer.");
+            Optional<ButtonType> input = alert.showAndWait();
+            if (input.get() == ButtonType.OK){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+
+
 }

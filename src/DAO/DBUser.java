@@ -5,7 +5,7 @@ import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import model.user;
+import model.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,8 +20,8 @@ public class DBUser {
      * This method returns all of the users in the database.
      * @return
      */
-    public static ObservableList<user> getAllUsers(){
-        ObservableList<user> uList = FXCollections.observableArrayList();
+    public static ObservableList<User> getAllUsers(){
+        ObservableList<User> uList = FXCollections.observableArrayList();
 
         try{
             String sql = "SELECT * from users";
@@ -34,7 +34,7 @@ public class DBUser {
                 int userID = rs.getInt("User_ID");
                 String username = rs.getString("User_Name");
                 String password = rs.getString("Password");
-                user a = new user(userID, username, password);
+                User a = new User(userID, username, password);
                 uList.add(a);
             }
         } catch (SQLException e) {
@@ -48,9 +48,9 @@ public class DBUser {
      * @param userID
      * @return
      */
-    public static user getUser(int userID) {
-        ObservableList<user> customersList = FXCollections.observableArrayList();
-        user a = null;
+    public static User getUser(int userID) {
+        ObservableList<User> customersList = FXCollections.observableArrayList();
+        User a = null;
 
         try{
             String sql = "select User_ID, User_Name From Users WHERE User_ID = " + userID;
@@ -61,7 +61,7 @@ public class DBUser {
                 int uID = rs.getInt("User_ID");
                 String username = rs.getString("User_Name");
 
-                a = new user(uID, username);
+                a = new User(uID, username);
                 customersList.add(a);
 
             }

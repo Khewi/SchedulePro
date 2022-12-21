@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 /**
  *  This class contains getter and setter functions for appointments.
  */
-public class appointment {
+public class Appointment {
     private int appID;
     private String appTitle;
     private String appDescription;
@@ -21,9 +21,9 @@ public class appointment {
     private int customerID;
     private int userID;
     private int contactID;
-    private model.contact contact;
-    private model.user user;
-    private model.customer customer;
+    private Contact contact;
+    private User user;
+    private Customer customer;
 
     /**
      * constructor method for new appointments.
@@ -38,7 +38,7 @@ public class appointment {
      * @param userID
      * @param contactID
      */
-    public appointment(int appID, String appTitle, String appDescription, String appType, String appLocation,
+    public Appointment(int appID, String appTitle, String appDescription, String appType, String appLocation,
                        LocalDateTime appStart, LocalDateTime appEnd, int customerID, int userID, int contactID){
         this.appID = appID;
         this.appTitle = appTitle;
@@ -53,7 +53,7 @@ public class appointment {
 
     }
 
-    public appointment(){
+    public Appointment(){
         super();
     }
 
@@ -221,14 +221,14 @@ public class appointment {
     }
 
     public static ObservableList getAllApps(){
-        ObservableList<appointment> allApps = DBAppointments.getAllApps();
+        ObservableList<Appointment> allApps = DBAppointments.getAllApps();
         return allApps;
     }
 
 
 
 
-    public user setUser(user user){
+    public User setUser(User user){
         this.user = user;
         return user;
     }

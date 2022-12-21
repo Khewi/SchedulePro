@@ -9,7 +9,7 @@ import java.util.Optional;
 /***
  * This class provides error message templates that will be displayed to the user.
  */
-public class info {
+public class Info {
 
     /***
      * This is a standard error message error that will be used to alert the user of input or user action issues.

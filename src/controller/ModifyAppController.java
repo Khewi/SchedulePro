@@ -1,7 +1,7 @@
 package controller;
 
 import DAO.DBAppointments;
-import DAO.BDCustomers;
+import DAO.DBCustomers;
 import DAO.DBContact;
 import DAO.DBUser;
 import database.DBConnection;
@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
 /***
  * This controller class holds the methods required for the modify application scene.
  */
-public class modifyAppController implements Initializable {
+public class ModifyAppController implements Initializable {
     public TextField IDTF;
     public TextField titleTF;
     public TextField descriptionTF;
@@ -37,13 +37,13 @@ public class modifyAppController implements Initializable {
     public ComboBox startTimeComboBox;
     public ComboBox endTimeComboBox1;
     public DatePicker datePicker;
-    public ComboBox<customer> customerComboBox;
-    public ComboBox<user> userComboBox;
-    public ComboBox<contact> contactCombobox;
+    public ComboBox<Customer> customerComboBox;
+    public ComboBox<User> userComboBox;
+    public ComboBox<Contact> contactCombobox;
     int selectedIndex;
     private ZoneId localZone = ZoneId.systemDefault();
     private ZoneId ESTZone = ZoneId.of("America/New_York");
-    ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
+    ObservableList<Appointment> allAppsList = DBAppointments.getAllApps();
 
 
 
@@ -54,9 +54,9 @@ public class modifyAppController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<customer> customerList = BDCustomers.getCustomers();
-        ObservableList<user> userList = DBUser.getAllUsers();
-        ObservableList<contact> contactList = DBContact.getContact();
+        ObservableList<Customer> customerList = DBCustomers.getCustomers();
+        ObservableList<User> userList = DBUser.getAllUsers();
+        ObservableList<Contact> contactList = DBContact.getContact();
 
 
         customerComboBox.setItems(customerList);
@@ -70,12 +70,12 @@ public class modifyAppController implements Initializable {
      * this method receives data to initialize the fields in the modifyApp screen.
      * @param appointment
      */
-    public void sendAppointment(appointment appointment){
+    public void sendAppointment(Appointment appointment){
 
-        appointment loadAppointment = appointment;
+        Appointment loadAppointment = appointment;
 
       userComboBox.setValue(DBUser.getUser(loadAppointment.getUserID()));
-      customerComboBox.setValue(BDCustomers.getCustomer(loadAppointment.getCustomerID()));
+      customerComboBox.setValue(DBCustomers.getCustomer(loadAppointment.getCustomerID()));
       contactCombobox.setValue(DBContact.getContact(loadAppointment.getContactID()));
 
       IDTF.setText(String.valueOf(loadAppointment.getAppID()));
@@ -287,16 +287,17 @@ public class modifyAppController implements Initializable {
 
         if(titleTF.getText().isEmpty() || descriptionTF.getText().isEmpty() || titleTF.getText().isEmpty() ||
                 typeTF.getText().isEmpty() || locationTF.getText().isEmpty() || contactCombobox.getItems().isEmpty() ||
-                userComboBox.getItems().isEmpty() || contactCombobox.getItems().isEmpty() || datePicker.getValue() == null ||
-                startTimeComboBox.getSelectionModel().isEmpty() || endTimeComboBox1.getSelectionModel().isEmpty()) {
-            info.error("SAVE ERROR", "Empty field found while trying to save appointment. Please enter a value in all fields.");
+                userComboBox.getItems().isEmpty() || contactCombobox.getItems().isEmpty()){
+
+                //|| datePicker.getValue() == null ||startTimeComboBox.getSelectionModel().isEmpty() || endTimeComboBox1.getSelectionModel().isEmpty())
+            Info.error("SAVE ERROR", "Empty field found while trying to save appointment. Please enter a value in all fields.");
             return false;
         } else if(start.isAfter(end)){
-            info.error("START TIME ERROR", "The start time cannot begin after the end time. Select a START time that begins before the END time.");
+            Info.error("START TIME ERROR", "The start time cannot begin after the end time. Select a START time that begins before the END time.");
             return false;
         }
         else if(ZonedStart.isBefore(ESTBusinessStart) || ZonedStart.isAfter(ESTBusinessEnd) || ZonedEnd.isBefore(ZonedStart) || ZonedEnd.isAfter(ESTBusinessEnd)){
-            info.error("SCHEDULE ERROR", "Appointment time is outside of business hours. Please select a time during the hours of 8am and 10pm EST.");
+            Info.error("SCHEDULE ERROR", "Appointment time is outside of business hours. Please select a time during the hours of 8am and 10pm EST.");
             return false;
         }
         else {
@@ -317,21 +318,24 @@ public class modifyAppController implements Initializable {
     public boolean noOverlap(int customerID, int appID, LocalDateTime start, LocalDateTime end) {
         System.out.println("\nnoOverlap method used\n---------------");
         boolean hasConflict = false;
-        for (appointment appointments : allAppsList) {
+        for (Appointment app : allAppsList) {
             System.out.println("CustomerID Being compared: " + customerID +"\nLocal start for new appointment: " + start + "Local end for new appointment: " + end);
 
-            LocalDateTime verifyStart = appointments.getAppStart();
+            LocalDateTime verifyStart = app.getAppStart();
             System.out.println("Start Time of app in system: " + verifyStart);
 
-            LocalDateTime verifyEnd = appointments.getAppEnd();
+            LocalDateTime verifyEnd = app.getAppEnd();
             System.out.println("End Time of app in system: " + verifyEnd);
             System.out.println("for loop to check app time starting \n ------------------");
 
-            int customerIDCheck = appointments.getCustomerID();
-            int appIDCheck = appointments.getAppID();
+            int customerIDCheck = app.getCustomerID();
+            int appIDCheck = app.getAppID();
             System.out.println("CustomerIDCheck: " + customerIDCheck + "\nappIDCheck: " + appIDCheck);
 
-            if ((customerID == customerIDCheck) && (appID != appIDCheck)
+            if ((customerID == customerIDCheck) && (appID == appIDCheck)){
+                System.out.println(appID + " and " +appIDCheck +" are the same appointment. No conflict.");
+            }
+            else if ((customerID == customerIDCheck) && (appID != appIDCheck)
                     && (start.isBefore(verifyStart) && end.isBefore(verifyStart)) || (start.isAfter(verifyEnd) && end.isAfter(verifyEnd))) {
                 hasConflict = false;
                 System.out.println("This appointment does not overlap any existing appointments with the same customer.");
@@ -340,7 +344,7 @@ public class modifyAppController implements Initializable {
                 System.out.println("No appointment conflict. The customer ID does not match any existing appointments in the system.");
             }
             else{
-                info.error("OVERLAPPING APPOINTMENT", "The time of this appointment " +
+                Info.error("OVERLAPPING APPOINTMENT", "The time of this appointment " +
                         "overlaps an existing appointment in the system for this customer.");
                 return true;
             }

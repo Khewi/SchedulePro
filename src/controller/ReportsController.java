@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 /**
  * This controller class hold the action functions for the reports screen.
  */
-public class reportsController implements Initializable {
+public class ReportsController implements Initializable {
     public AnchorPane appReport;
     public Tab contactReport;
     public TableColumn appIdCol;
@@ -35,7 +35,7 @@ public class reportsController implements Initializable {
     public TableColumn startCol;
     public TableColumn endCol;
     public TableColumn custID;
-    public ComboBox<contact> contactCombo;
+    public ComboBox<Contact> contactCombo;
     public ComboBox<String> monthCombo;
     public ComboBox<String> typeCombo;
     public AnchorPane customerPane;
@@ -44,13 +44,13 @@ public class reportsController implements Initializable {
     public TableColumn divCol;
     public TableView scheduleTable;
     public ComboBox<String> divCombo;
-    public ComboBox<country> countryCombo;
+    public ComboBox<Country> countryCombo;
     public TableView countryTable;
     public Text descText;
     public Text totalText;
-    ObservableList<contact> allContacts = DBContact.getContact();
-    ObservableList<appointment> allApps = DBAppointments.getAllApps();
-    ObservableList<country> allCountries = DBCountries.getCountries();
+    ObservableList<Contact> allContacts = DBContact.getContact();
+    ObservableList<Appointment> allApps = DBAppointments.getAllApps();
+    ObservableList<Country> allCountries = DBCountries.getCountries();
     ObservableList<FLD> allDiv = DBDivision.getDivision();
 
 
@@ -99,13 +99,13 @@ public class reportsController implements Initializable {
      * @param actionEvent
      */
     public void onActionLoadSchedule(ActionEvent actionEvent) {
-        ObservableList<appointment> appInfor = FXCollections.observableArrayList();
+        ObservableList<Appointment> appInfor = FXCollections.observableArrayList();
 
-        appointment contactAppSchedule;
+        Appointment contactAppSchedule;
 
         int contactID = contactCombo.getValue().getContactID();
 
-        for (appointment appointment : allApps) {
+        for (Appointment appointment : allApps) {
             if (appointment.getContactID() == contactID) {
                 contactAppSchedule = appointment;
                 appInfor.add(contactAppSchedule);
@@ -119,21 +119,21 @@ public class reportsController implements Initializable {
      * @param actionEvent
      */
     public void onActionSetCountryTable(ActionEvent actionEvent) {
-        ObservableList<customer> allCusts = BDCustomers.getCustomers();
+        ObservableList<Customer> allCusts = DBCustomers.getCustomers();
 
         String divName = divCombo.getValue();
         System.out.println("div combo box: " + divName);
 
-        ObservableList<customer> custDivList = FXCollections.observableArrayList();
+        ObservableList<Customer> custDivList = FXCollections.observableArrayList();
 
 
-        for (customer customer : allCusts) {
+        for (Customer customer : allCusts) {
             if (customer.getDivision().equals(divName)) {
 
                 String country = String.valueOf(customer.getCountryName());
                 String custName = customer.getCustomerName();
 
-                customer c = new customer(custName, divName, country);
+                Customer c = new Customer(custName, divName, country);
                 custDivList.add(c);
 
             }
@@ -253,7 +253,7 @@ public class reportsController implements Initializable {
         String selectedType = typeCombo.getValue();
         String selectedMonth = monthCombo.getValue();
         int total = 0;
-        for(appointment app: allApps){
+        for(Appointment app: allApps){
             String appMonth = String.valueOf(app.getAppStart().getMonth());
             System.out.println(appMonth);
             String appType = app.getAppType();
@@ -272,7 +272,7 @@ public class reportsController implements Initializable {
         ObservableList<String> appType = FXCollections.observableArrayList();
        String type;
 
-       for(appointment appT: allApps){
+       for(Appointment appT: allApps){
           type = appT.getAppType();
           appType.add(type);
           }

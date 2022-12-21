@@ -1,6 +1,6 @@
 package controller;
 
-import DAO.BDCustomers;
+import DAO.DBCustomers;
 import DAO.DBAppointments;
 import database.DBConnection;
 import javafx.collections.ObservableList;
@@ -12,9 +12,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import model.appointment;
-import model.customer;
-import model.info;
+import model.Appointment;
+import model.Customer;
+import model.Info;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /***
  * This controller class holds the method required for the customer scene.
  */
-public class customersController implements Initializable {
+public class CustomersController implements Initializable {
     public Button customersButton;
     public Button appointmentsButton;
     public Button reportsButton;
@@ -45,7 +45,7 @@ public class customersController implements Initializable {
     public Button backButton;
     public TableView customerTable;
     public TableColumn stateFLDCol;
-    ObservableList<customer> allCustomers = BDCustomers.getCustomers();
+    ObservableList<Customer> allCustomers = DBCustomers.getCustomers();
 
 
     @Override
@@ -153,8 +153,8 @@ public class customersController implements Initializable {
         loader.setLocation(getClass().getResource("/view/modifyCustomer.fxml"));
         loader.load();
 
-        modifyCustomerController mCController = loader.getController();
-        mCController.sendCustomer((customer) customerTable.getSelectionModel().getSelectedItem());
+        ModifyCustomerController mCController = loader.getController();
+        mCController.sendCustomer((Customer) customerTable.getSelectionModel().getSelectedItem());
 
 
         Stage stage = (Stage)((Button)actionEvent.getSource()).getScene().getWindow();
@@ -171,9 +171,10 @@ public class customersController implements Initializable {
      */
     public void onActionDeleteCustomer(ActionEvent actionEvent) {
         if (customerTable.getSelectionModel().getSelectedItem() != null) {
-            ObservableList<appointment> allAppsCheck = DBAppointments.getAllApps();
-            customer deleteCustomer = (customer) customerTable.getSelectionModel().getSelectedItem();
+            ObservableList<Appointment> allAppsCheck = DBAppointments.getAllApps();
+            Customer deleteCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
             int cusId = deleteCustomer.getCustomerID();
+            String custName = deleteCustomer.getCustomerName();
             System.out.println("Customer to be deleted: " + cusId + " " + deleteCustomer.getCustomerName());
             AtomicBoolean hasConflict = new AtomicBoolean(false);
 
@@ -183,28 +184,31 @@ public class customersController implements Initializable {
             alert.setContentText("Click OK to delete customer.");
             Optional<ButtonType> action = alert.showAndWait();
             if (action.get() == ButtonType.OK) {
-                allAppsCheck.forEach(appointment -> {
-                    if (appointment.getCustomerID() == cusId) {
+                for (Appointment app : allAppsCheck) {
+                    if (app.getCustomerID() == cusId) {
                         hasConflict.set(true);
-                        info.error("ERROR", "Unable to delete customer. There are still active appointments for this customer. Please delete the all appointments for this customer before trying again.");
+                        Info.error("ERROR", "Unable to delete customer. There are still active appointments for this customer. Please delete all appointments for this customer before trying again.");
+                        break;
                     } else {
                         hasConflict.set(false);
                         try {
                             deleteCustomer(cusId);
                             allCustomers.removeAll();
-                            allCustomers = BDCustomers.getCustomers();
+                            allCustomers = DBCustomers.getCustomers();
                             customerTable.setItems(allCustomers);
+                            Info.inform("DELETE SUCCESSFUL", custName + " has been deleted from the system.");
+                            break;
 
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
                     }
-                });
+                }
             } else {
                 System.out.println("Customer delete canceled.");
             }
         }else{
-                info.error("DELETE CUSTOMER", "Nothing selected. \n Please select a customer to delete.");
+                Info.error("DELETE CUSTOMER", "Nothing selected. \n Please select a customer to delete.");
             }
         }
 

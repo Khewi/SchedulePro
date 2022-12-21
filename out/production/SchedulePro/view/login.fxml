@@ -5,24 +5,27 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.loginController">
+<AnchorPane prefHeight="214.0" prefWidth="403.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
    <children>
       <Text fx:id="scheduleProlabel" layoutX="133.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule Pro">
          <font>
             <Font name="System Bold" size="22.0" />
          </font>
       </Text>
-      <HBox layoutX="59.0" layoutY="68.0" prefHeight="37.0" prefWidth="290.0">
+      <HBox layoutX="59.0" layoutY="68.0" prefHeight="37.0" prefWidth="317.0">
          <children>
             <Text fx:id="usernameLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="Username: ">
                <font>
                   <Font size="16.0" />
                </font>
             </Text>
-            <TextField fx:id="userField" />
+            <TextField fx:id="userField" prefHeight="25.0" prefWidth="164.0">
+               <HBox.margin>
+                  <Insets left="25.0" />
+               </HBox.margin></TextField>
          </children>
       </HBox>
-      <HBox layoutX="59.0" layoutY="100.0" prefHeight="29.0" prefWidth="234.0">
+      <HBox layoutX="59.0" layoutY="100.0" prefHeight="29.0" prefWidth="342.0">
          <children>
             <Text fx:id="passwordLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="Password: ">
                <font>
@@ -31,12 +34,15 @@
                <HBox.margin>
                   <Insets right="5.0" />
                </HBox.margin></Text>
-            <PasswordField fx:id="passField" />
+            <PasswordField fx:id="passField" prefHeight="25.0" prefWidth="164.0">
+               <HBox.margin>
+                  <Insets left="25.0" />
+               </HBox.margin></PasswordField>
          </children>
       </HBox>
-      <HBox layoutX="256.0" layoutY="150.0" prefHeight="37.0" prefWidth="124.0">
+      <HBox layoutX="191.0" layoutY="149.0" prefHeight="37.0" prefWidth="172.0">
          <children>
-            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onActionLogin" style="-fx-background-color: #D4F1F4;" text="LOGIN" />
+            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onActionLogin" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #D4F1F4;" text="LOGIN" />
             <Button fx:id="exitButton" mnemonicParsing="false" onAction="#onActionExit" style="-fx-background-color: #D4F1F4;" text="EXIT">
                <HBox.margin>
                   <Insets left="15.0" />
@@ -44,14 +50,9 @@
             </Button>
          </children>
       </HBox>
-      <Text fx:id="zoneIDLabel" layoutX="59.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zone ID: ">
+      <Text fx:id="genZoneTxt" layoutX="64.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gen Zone">
          <font>
             <Font size="16.0" />
-         </font>
-      </Text>
-      <Text fx:id="genZoneTxt" layoutX="133.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gen Zone">
-         <font>
-            <Font size="14.0" />
          </font>
       </Text>
    </children>

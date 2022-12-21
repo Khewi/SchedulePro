@@ -2,7 +2,7 @@ Schedule Pro
 
     Katelyn Hewitt
     KHewi29@WGU.edu
-    12/16/2022
+    12/20/2022
 
 Purpose:
     Schedule Pro is application in which the main function focuses on creating and modifying customer appointments.
@@ -22,10 +22,10 @@ Specifications:
         java-sdk-17.0.1
 
     JavaFX version:
-        javaFX-sdk-11.0.2
+        javaFX-sdk-17.0.1
 
     Database connector driver:
-        mysql-connector-java-8.0.27
+        mysql-connector-java-8.0.26
 
 
 How to run Schedule Pro:

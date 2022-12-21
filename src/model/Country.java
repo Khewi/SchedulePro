@@ -4,7 +4,7 @@ package model;
 /***
  * This class contains getter and setter functions for countries.
  */
-public class country {
+public class Country {
 
     private int countryID;
     private String countryName;
@@ -14,7 +14,7 @@ public class country {
      * @param countryID
      * @param countryName
      */
-    public country(int countryID, String countryName){
+    public Country(int countryID, String countryName){
         this.countryID = countryID;
         this.countryName = countryName;
     }

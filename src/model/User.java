@@ -4,7 +4,7 @@ package model;
 /***
  * This class contains getter and setter functions for users.
  */
-public class user {
+public class User {
     private int userID;
     private String username;
     private String password;
@@ -13,18 +13,18 @@ public class user {
     /**
      * Constructor method for new users.
      */
-    public user(){
+    public User(){
         super();
     }
 
-    public user(int userID, String username, String password) {
+    public User(int userID, String username, String password) {
         this.userID = userID;
         this.username = username;
         this.password = password;
     }
 
 
-    public user(int id, String username){
+    public User(int id, String username){
         this.userID = id;
         this.username = username;
     }

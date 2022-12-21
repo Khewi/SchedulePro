@@ -3,18 +3,16 @@ package DAO;
 import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.country;
-import model.user;
+import model.Country;
 
-import java.lang.constant.Constable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DBCountries {
 
-    public static ObservableList<country> getCountries(){
-        ObservableList<country> countryList = FXCollections.observableArrayList();
+    public static ObservableList<Country> getCountries(){
+        ObservableList<Country> countryList = FXCollections.observableArrayList();
 
         try{
             String sql = "Select * FROM Countries";
@@ -25,7 +23,7 @@ public class DBCountries {
                 int id = rs.getInt("Country_ID");
                 String name = rs.getString("Country");
 
-                country c = new country(id, name);
+                Country c = new Country(id, name);
                 countryList.add(c);
 
             }
@@ -40,9 +38,9 @@ public class DBCountries {
      * @param countryID
      * @return
      */
-    public static country getCountry(int countryID) {
+    public static Country getCountry(int countryID) {
 
-        country a = null;
+        Country a = null;
 
         try{
             String sql = "select country_ID, Country From Countries WHERE Country_ID = " + countryID;
@@ -53,7 +51,7 @@ public class DBCountries {
                 int countryId = rs.getInt("Country_ID");
                 String countryName = rs.getString("Country");
 
-                a = new country(countryId, countryName);
+                a = new Country(countryId, countryName);
                 System.out.println(countryId + " " + countryName);
 
 
@@ -64,7 +62,30 @@ public class DBCountries {
         return a;
     }
 
+    public static Country getCountryByDiv(int divId) {
 
+        Country a = null;
+
+        try{
+            String sql = "select c.country_ID, c.Country From Countries as c INNER JOIN first_level_divisions as d on c.country_ID = d.country_ID and d.division_ID = ?";
+            PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+            ps.setInt(1, divId);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                int countryId = rs.getInt("Country_ID");
+                String countryName = rs.getString("Country");
+
+                a = new Country(countryId, countryName);
+                System.out.println(countryId + " " + countryName);
+
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return a;
+    }
 
 
 

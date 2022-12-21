@@ -1,7 +1,7 @@
 package controller;
 
 
-import DAO.BDCustomers;
+import DAO.DBCustomers;
 import DAO.DBAppointments;
 import DAO.DBContact;
 import DAO.DBUser;
@@ -27,29 +27,29 @@ import java.util.ResourceBundle;
 /***
  * This controller class holds the methods required for the new appointment scene.
  */
-public class newAppController<localZone> implements Initializable {
+public class NewAppController<localZone> implements Initializable {
     public TextField IDTF;
     public TextField titleTF;
     public TextField descriptionTF;
     public TextField locationTF;
     public TextField typeTF;
     public DatePicker datePicker;
-    public ComboBox<customer> customerIDCombo;
-    public ComboBox<contact> contactCombo;
-    public ComboBox<user> userCombo;
+    public ComboBox<Customer> customerIDCombo;
+    public ComboBox<Contact> contactCombo;
+    public ComboBox<User> userCombo;
     public ComboBox startTimeCombo;
     public ComboBox endTimeCombo;
     private final ZoneId localZone = ZoneId.systemDefault();
     private final ZoneId ESTZone = ZoneId.of("America/New_York");
     private final ZoneId UTCZone = ZoneId.of("UTC");
-    ObservableList<appointment> allAppsList = DBAppointments.getAllApps();
+    ObservableList<Appointment> allAppsList = DBAppointments.getAllApps();
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<customer> customerList = BDCustomers.getCustomers();
-        ObservableList<user> userList = DBUser.getAllUsers();
-        ObservableList<contact> contactList = DBContact.getContact();
+        ObservableList<Customer> customerList = DBCustomers.getCustomers();
+        ObservableList<User> userList = DBUser.getAllUsers();
+        ObservableList<Contact> contactList = DBContact.getContact();
 
         customerIDCombo.setItems(customerList);
         contactCombo.setItems(contactList);
@@ -137,66 +137,70 @@ public class newAppController<localZone> implements Initializable {
     public boolean allFieldsValid(){
 
         //grabbing date/time from fields and creating start and end concat date/Times
-        LocalDate date = datePicker.getValue();
-        LocalTime start = (LocalTime) startTimeCombo.getSelectionModel().getSelectedItem();
-        LocalTime end = (LocalTime) endTimeCombo.getSelectionModel().getSelectedItem();
-        LocalDateTime localStart = LocalDateTime.of(date, start);
-        LocalDateTime localEnd = LocalDateTime.of(date, end);
+        if(startTimeCombo.getValue() != null && endTimeCombo.getValue() != null){
+            LocalDate date = datePicker.getValue();
+            LocalTime start = (LocalTime) startTimeCombo.getSelectionModel().getSelectedItem();
+            LocalTime end = (LocalTime) endTimeCombo.getSelectionModel().getSelectedItem();
+            LocalDateTime localStart = LocalDateTime.of(date, start);
+            LocalDateTime localEnd = LocalDateTime.of(date, end);
 
-        //converting LocalDateTime to ZonedDateTime
-        ZonedDateTime ZonedStart = ZonedDateTime.of(localStart, localZone);
-        ZonedDateTime ZonedEnd = ZonedDateTime.of(localEnd, localZone);
-        System.out.println("Local zone time: \nStart: " + ZonedStart + "\n End: " + ZonedEnd);
+            //converting LocalDateTime to ZonedDateTime
+            ZonedDateTime ZonedStart = ZonedDateTime.of(localStart, localZone);
+            ZonedDateTime ZonedEnd = ZonedDateTime.of(localEnd, localZone);
+            System.out.println("Local zone time: \nStart: " + ZonedStart + "\n End: " + ZonedEnd);
 
-        //Converting local zone date/time to EST time
-        ZonedDateTime ESTStart = ZonedStart.withZoneSameInstant(ESTZone);
-        ZonedDateTime ESTEnd = ZonedEnd.withZoneSameInstant(ESTZone);
+            //Converting local zone date/time to EST time
+            ZonedDateTime ESTStart = ZonedStart.withZoneSameInstant(ESTZone);
+            ZonedDateTime ESTEnd = ZonedEnd.withZoneSameInstant(ESTZone);
 
-        System.out.println("EST converted zone time: \nStart: " + ESTStart + "\n End: " + ESTEnd);
+            System.out.println("EST converted zone time: \nStart: " + ESTStart + "\n End: " + ESTEnd);
 
-        //Setting EST business hours for logic check
-        LocalTime businessStart = LocalTime.of(8,0,0);
-        LocalTime businessEnd = LocalTime.of(22, 0, 0);
-        //Converting business hours to LocalDateTime for logic check
-        LocalDateTime businessDTStart = LocalDateTime.of(date, businessStart);
-        LocalDateTime businessDTEnd = LocalDateTime.of(date, businessEnd);
-        //converting to ZonedDateTime for time comparison in logic check
-        ZonedDateTime ESTBusinessStart = ZonedDateTime.of(businessDTStart, ESTZone);
-        ZonedDateTime ESTBusinessEnd = ZonedDateTime.of(businessDTEnd,ESTZone);
+            //Setting EST business hours for logic check
+            LocalTime businessStart = LocalTime.of(8,0,0);
+            LocalTime businessEnd = LocalTime.of(22, 0, 0);
+            //Converting business hours to LocalDateTime for logic check
+            LocalDateTime businessDTStart = LocalDateTime.of(date, businessStart);
+            LocalDateTime businessDTEnd = LocalDateTime.of(date, businessEnd);
+            //converting to ZonedDateTime for time comparison in logic check
+            ZonedDateTime ESTBusinessStart = ZonedDateTime.of(businessDTStart, ESTZone);
+            ZonedDateTime ESTBusinessEnd = ZonedDateTime.of(businessDTEnd,ESTZone);
 
-        int customerID = customerIDCombo.getSelectionModel().getSelectedIndex();
-        int appID = -1;
-
-
+            int customerID = customerIDCombo.getSelectionModel().getSelectedIndex();
+            int appID = -1;
 
 
-        if(titleTF.getText().isEmpty() || descriptionTF.getText().isEmpty() || titleTF.getText().isEmpty() ||
-                    typeTF.getText().isEmpty() || locationTF.getText().isEmpty() || contactCombo.getItems().isEmpty() ||
-                    userCombo.getItems().isEmpty() || contactCombo.getItems().isEmpty() || datePicker.getValue() == null ||
-                    startTimeCombo.getSelectionModel().isEmpty() || endTimeCombo.getSelectionModel().isEmpty()) {
-                info.error("SAVE ERROR", "Empty field found while trying to save appointment. Please enter a value in all fields.");
-                return false;
-            } else if(start.isAfter(end)){
-                info.error("START TIME ERROR", "The start time cannot begin after the end time. Select a START time that begins before the END time.");
-                return false;
-            }
-            else if(ZonedStart.isBefore(ESTBusinessStart) || ZonedStart.isAfter(ESTBusinessEnd) || ZonedEnd.isBefore(ZonedStart) || ZonedEnd.isAfter(ESTBusinessEnd)){
-                info.error("SCHEDULE ERROR", "Appointment time is outside of business hours. Please select a time during the hours of 8am and 10pm EST.");
-                return false;
-            }
-            else {
+
+
+            if(titleTF.getText().isEmpty() || descriptionTF.getText().isEmpty() || titleTF.getText().isEmpty() ||
+                        typeTF.getText().isEmpty() || locationTF.getText().isEmpty() || contactCombo.getItems().isEmpty() ||
+                        userCombo.getItems().isEmpty() || contactCombo.getItems().isEmpty() || datePicker.getValue() == null ||
+                        startTimeCombo.getSelectionModel().isEmpty() || endTimeCombo.getSelectionModel().isEmpty()) {
+                    Info.error("SAVE ERROR", "Empty field found while trying to save appointment. Please enter a value in all fields.");
+                    return false;
+                } else if(start.isAfter(end)){
+                    Info.error("START TIME ERROR", "The start time cannot begin after the end time. Select a START time that begins before the END time.");
+                    return false;
+                }
+                else if(ZonedStart.isBefore(ESTBusinessStart) || ZonedStart.isAfter(ESTBusinessEnd) || ZonedEnd.isBefore(ZonedStart) || ZonedEnd.isAfter(ESTBusinessEnd)){
+                    Info.error("SCHEDULE ERROR", "Appointment time is outside of business hours. Please select a time during the hours of 8am and 10pm EST.");
+                    return false;
+                }
+                else {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("SAVE APPOINTMENT");
                 alert.setHeaderText("Do you want to save the current appointment?");
                 alert.setContentText("Click OK to save appointment.");
                 Optional<ButtonType> input = alert.showAndWait();
-                if (input.get() == ButtonType.OK){
+                if (input.get() == ButtonType.OK) {
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
             }
+            }else{
+            Info.error("SAVE ERROR", "Empty field found while trying to save appointment. Please enter a value in all fields.");
+            return false;
+        }
     }
 
 
@@ -205,7 +209,7 @@ public class newAppController<localZone> implements Initializable {
         System.out.println("\nnoOverlap method used\n---------------");
         int appID = -1;
         boolean hasConflict = false;
-        for (appointment appointments : allAppsList) {
+        for (Appointment appointments : allAppsList) {
             System.out.println("CustomerID Being compared: " + customerID +"\nLocal start for new appointment: " + start + "Local end for new appointment: " + end);
 
             LocalDateTime verifyStart = appointments.getAppStart();
@@ -228,7 +232,7 @@ public class newAppController<localZone> implements Initializable {
                 System.out.println("No appointment conflict. The customer ID does not match any existing appointments in the system.");
             }
             else{
-                info.error("OVERLAPPING APPOINTMENT", "The time of this appointment " +
+                Info.error("OVERLAPPING APPOINTMENT", "The time of this appointment " +
                         "overlaps an existing appointment in the system for this customer.");
                 return true;
             }

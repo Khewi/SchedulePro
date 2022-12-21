@@ -4,13 +4,13 @@ package model;
 /***
  * This class contains getter and setter functions for contacts.
  */
-public class contact {
+public class Contact {
 
     private int contactID;
     private String contactName;
     private String email;
 
-    public contact(){
+    public Contact(){
         super();
     }
 
@@ -20,14 +20,14 @@ public class contact {
      * @param contactName
      * @param email
      */
-    public contact(int contactID, String contactName, String email) {
+    public Contact(int contactID, String contactName, String email) {
         this.contactID = contactID;
         this.contactName = contactName;
         this.email = email;
     }
 
 
-    public contact(int contactID, String contactName){
+    public Contact(int contactID, String contactName){
         this.contactID = contactID;
         this.contactName = contactName;
     }
