@@ -10,9 +10,6 @@ public class Contact {
     private String contactName;
     private String email;
 
-    public Contact(){
-        super();
-    }
 
     /**
      * Constructor method for new contacts.

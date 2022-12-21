@@ -53,9 +53,6 @@ public class Appointment {
 
     }
 
-    public Appointment(){
-        super();
-    }
 
     /**
      * getter function for appID.

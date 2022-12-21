@@ -58,7 +58,7 @@ public class ReportsController implements Initializable {
      * This function initializes the report scene. It loads the combo box data for the contact and country. It set the appointment table columns.
      * Lambda #2
      * This lambda was built to take the above data list and turn all String values into an uppercase list.
-     * The list needs to contain all uppercased letters to equal the same String format as the month that is taken from the Start dates in the appointment.
+     * The list needs to contain all uppercase letters to equal the same String format as the month that is taken from the Start dates in the appointment.
      * To return the appropriate number of appointments by type in that month, the list needs to contain all uppercase values to equal the same value the time API functions use to get the month.
      * @param url
      * @param resourceBundle

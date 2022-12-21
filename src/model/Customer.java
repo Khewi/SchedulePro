@@ -21,9 +21,6 @@ public class Customer {
     private String countryName;
 
 
-    public Customer(){
-        super();
-    }
     /**
      * constructor method for customers.
      * @param customerID

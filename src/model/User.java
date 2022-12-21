@@ -13,9 +13,6 @@ public class User {
     /**
      * Constructor method for new users.
      */
-    public User(){
-        super();
-    }
 
     public User(int userID, String username, String password) {
         this.userID = userID;
@@ -28,6 +25,8 @@ public class User {
         this.userID = id;
         this.username = username;
     }
+
+    public User() { }
 
     /**
      * getter function for userID.

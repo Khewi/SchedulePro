@@ -300,6 +300,10 @@ public class ModifyAppController implements Initializable {
             Info.error("SCHEDULE ERROR", "Appointment time is outside of business hours. Please select a time during the hours of 8am and 10pm EST.");
             return false;
         }
+        else if(start == end){
+            Info.error("SCHEDULE ERROR", "Appointment start time and end time cannot be the same.");
+            return false;
+        }
         else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("SAVE APPOINTMENT");
