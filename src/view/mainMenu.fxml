@@ -5,16 +5,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="userCombobox" prefHeight="246.0" prefWidth="281.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
+<AnchorPane fx:id="userCombobox" prefHeight="467.0" prefWidth="682.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
    <children>
-      <VBox prefHeight="253.0" prefWidth="281.0" style="-fx-background-color: #D4F1F4;">
+      <VBox layoutX="-2.0" prefHeight="467.0" prefWidth="170.0" style="-fx-background-color: #D4F1F4;">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule Pro">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
                <VBox.margin>
-                  <Insets left="75.0" top="15.0" />
+                  <Insets bottom="5.0" left="25.0" top="10.0" />
                </VBox.margin>
             </Text>
             <Button fx:id="customersButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionCustomersScreen" prefWidth="175.0" style="-fx-background-color: #189AB4;" text="Customers" textFill="WHITE">
@@ -22,7 +22,7 @@
                   <Font name="System Bold" size="12.0" />
                </font>
                <VBox.margin>
-                  <Insets left="50.0" top="25.0" />
+                  <Insets />
                </VBox.margin>
             </Button>
             <Button fx:id="appointmentsButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionAppointmentsScreen" prefWidth="175.0" style="-fx-background-color: #189AB4;" text="Appointments" textFill="WHITE">
@@ -30,7 +30,7 @@
                   <Font name="System Bold" size="12.0" />
                </font>
                <VBox.margin>
-                  <Insets left="50.0" top="15.0" />
+                  <Insets />
                </VBox.margin>
             </Button>
             <Button fx:id="reportsButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionReportsScreen" prefWidth="175.0" style="-fx-background-color: #189AB4;" text="Reports" textFill="WHITE">
@@ -38,7 +38,7 @@
                   <Font name="System Bold" size="12.0" />
                </font>
                <VBox.margin>
-                  <Insets left="50.0" top="15.0" />
+                  <Insets />
                </VBox.margin>
             </Button>
             <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#onActionLogout" prefWidth="175.0" style="-fx-background-color: #05445E;" text="LOGOUT" textFill="WHITE">
@@ -46,9 +46,25 @@
                   <Font name="System Bold" size="12.0" />
                </font>
                <VBox.margin>
-                  <Insets left="50.0" top="15.0" />
+                  <Insets top="325.0" />
                </VBox.margin>
             </Button>
          </children></VBox>
+      <TableView fx:id="appointmentTable" layoutX="187.0" layoutY="100.0" prefHeight="338.0" prefWidth="476.0">
+        <columns>
+          <TableColumn fx:id="appIDCol" prefWidth="51.0" text="App ID" />
+          <TableColumn fx:id="titleCol" prefWidth="99.0" text="Title" />
+            <TableColumn fx:id="descriptionCol" prefWidth="103.0" text="Description" />
+            <TableColumn fx:id="typeCol" prefWidth="69.0" text="Type" />
+            <TableColumn fx:id="startCol" prefWidth="72.0" text="Start" />
+            <TableColumn fx:id="endCol" prefWidth="81.0" text="End" />
+        </columns>
+      </TableView>
+      <TextField fx:id="searchBar" layoutX="514.0" layoutY="69.0" onAction="#onActionSearch" promptText="Enter Contact Name" />
+      <Text layoutX="247.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Daily Appointment Schedule">
+         <font>
+            <Font name="System Bold" size="28.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

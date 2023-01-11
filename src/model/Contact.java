@@ -1,6 +1,8 @@
 package model;
 
 
+import javafx.collections.ObservableList;
+
 /***
  * This class contains getter and setter functions for contacts.
  */
@@ -9,6 +11,8 @@ public class Contact {
     private int contactID;
     private String contactName;
     private String email;
+    private static ObservableList<Contact> allContacts;
+    private Contact c;
 
 
     /**
@@ -86,4 +90,7 @@ public class Contact {
     public String toString(){
         return contactID + " " + contactName;
     }
+
+
 }
+
