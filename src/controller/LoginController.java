@@ -74,11 +74,16 @@ public class LoginController implements Initializable {
         loginButton.setText(rb.getString("Login"));
         exitButton.setText(rb.getString("Exit"));
 
+
         if(DBReconciliation.checkRecTableExist() == true){
             ObservableList<Reconciliation> allRecs = DBReconciliation.getReconciliations();
             System.out.println("Reconciliation table exists in the database");
             if(allRecs.isEmpty()){
-                DBReconciliation.insertDummyTasks();
+                try {
+                    DBReconciliation.insertDummyTasks();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 System.out.println("dummy tasks inserted to reconciliation table.");
             }
         }else{
