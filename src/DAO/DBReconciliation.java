@@ -19,10 +19,6 @@ public class DBReconciliation {
                 System.out.println("Reconciliation table exists");
                 return true;
             }else{
-                String sql = "CREATE TABLE reconciliations (Reconciliation_ID INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), description VARCHAR(150), due_by TIMESTAMP, Customer_ID INT, FOREIGN KEY (Customer_ID) REFERENCES customers(Customer_ID));";
-                PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-                ps.executeQuery();
-                insertDummyTasks();
                 return false;
             }
         } catch (SQLException throwables) {

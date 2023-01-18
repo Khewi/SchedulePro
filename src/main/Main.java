@@ -42,16 +42,6 @@ public class Main extends Application {
 
         launch(args);
 
-        if(DBReconciliation.checkRecTableExist() == true){
-            ObservableList<Reconciliation> allRecs = DBReconciliation.getReconciliations();
-            if(allRecs.isEmpty()){
-                DBReconciliation.insertDummyTasks();
-                System.out.println("dummy tasks inserted to reconciliation table.");
-            }
-        }else{
-            System.out.println("Unable to insert dummy tasks to database.");
-        }
-
         DBConnection.closeConnection();
 
 

@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Appointment;
 import model.Info;
+import model.Reconciliation;
 import model.User;
 import util.DateTime;
 
@@ -73,7 +74,26 @@ public class LoginController implements Initializable {
         loginButton.setText(rb.getString("Login"));
         exitButton.setText(rb.getString("Exit"));
 
+        if(DBReconciliation.checkRecTableExist() == true){
+            ObservableList<Reconciliation> allRecs = DBReconciliation.getReconciliations();
+            System.out.println("Reconciliation table exists in the database");
+            if(allRecs.isEmpty()){
+                DBReconciliation.insertDummyTasks();
+                System.out.println("dummy tasks inserted to reconciliation table.");
+            }
+        }else{
+            try{
+                DBConnection.getConnection();
+                String sql = "CREATE TABLE reconciliations (Reconciliation_ID INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), description VARCHAR(150), due_by TIMESTAMP, Customer_ID INT, FOREIGN KEY (Customer_ID) REFERENCES customers(Customer_ID));";
+                PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+                ps.executeUpdate();
+                System.out.println("Reconciliation table was inserted into the database");
+                DBReconciliation.insertDummyTasks();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
 
+        }
 
 
     }
