@@ -2,6 +2,9 @@ package controller;
 
 import DAO.DBAppointments;
 import DAO.DBContact;
+import DAO.DBCustomers;
+import DAO.DBReconciliation;
+import database.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,13 +15,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import model.Appointment;
-import model.Contact;
-import model.Info;
+import model.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -37,13 +42,25 @@ public class MainMenuController implements Initializable {
     public TableColumn appIDCol;
     public TableColumn titleCol;
     public TableColumn descriptionCol;
-    public TextField searchBar;
+    public TextField contactSearchBar;
+    public TextField customerSearchBar; //new
+    public TableColumn taskDueByCol;//new
+    public TableColumn taskCustomerCol;//new
+    public TableColumn taskDescrCol;//new
+    public TableColumn taskNameCol;//new
+    public TableView taskTableView;//new
+    public TextField taskNameTF;
+    public TextField taskDescrTF;
+    public ComboBox<Customer> customerCombo;
+    public DatePicker dueByDatePicker;
     int contactID;
     int userID;
     ObservableList<Appointment> allApps = DBAppointments.getAllApps();
     ObservableList<Appointment> dailyApps = FXCollections.observableArrayList();
     ObservableList<Contact> allContacts = DBContact.getContact();
     ObservableList<Appointment> contactSearch = FXCollections.observableArrayList();
+    ObservableList<Reconciliation> allRecs = DBReconciliation.getReconciliations();
+    ObservableList<Customer> customerList = DBCustomers.getCustomers();
 
 
     /***
@@ -123,11 +140,19 @@ public class MainMenuController implements Initializable {
         startCol.setCellValueFactory(new PropertyValueFactory<>("appStart"));
         endCol.setCellValueFactory(new PropertyValueFactory<>("appEnd"));
 
-        setTable();
+        taskNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        taskDescrCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        taskCustomerCol.setCellValueFactory(new PropertyValueFactory<>("customer"));
+        taskDueByCol.setCellValueFactory(new PropertyValueFactory<>("dueBy"));
+        taskTableView.setItems(allRecs);
+
+        customerCombo.setItems(customerList);
+
+        setAppTable();
 
     }
 
-    private void setTable() {
+    private void setAppTable() {
         LocalDate today = LocalDate.now();
         System.out.println("Today: " + today);
 
@@ -140,8 +165,6 @@ public class MainMenuController implements Initializable {
             }
             appointmentTable.setItems(dailyApps);
         }
-
-
     }
 
 
@@ -150,10 +173,10 @@ public class MainMenuController implements Initializable {
      *
      * @param actionEvent
      */
-    public void onActionSearch(ActionEvent actionEvent) {
+    public void onActionSearchContacts(ActionEvent actionEvent) {
         LocalDate today = LocalDate.now();
         Contact contact = null;
-        String search = searchBar.getText();
+        String search = contactSearchBar.getText();
         Contact contactResult = checkContName();
         Appointment newDaily = null;
 
@@ -169,7 +192,6 @@ public class MainMenuController implements Initializable {
 
                     } else {
                         System.out.println("custID/date did not match");
-
                     }
                 }
                 appointmentTable.getItems().clear();
@@ -183,7 +205,7 @@ public class MainMenuController implements Initializable {
 
 
     private Contact checkContName() {
-        String searchName = searchBar.getText();
+        String searchName = contactSearchBar.getText();
         Contact result = null;
         for (Contact c: allContacts){
             if (c.getContactName().contains(searchName)){
@@ -194,5 +216,146 @@ public class MainMenuController implements Initializable {
     }
 
 
+    private Customer checkCustomerName() {
+        String searchCustomer = customerSearchBar.getText();
+        Customer result = null;
+        if (customerSearchBar.getText().isEmpty()) {
+            refreshTable();
+        } else {
+            for (Customer c : customerList) {
+                if (c.getCustomerName().contains(searchCustomer)) {
+                    System.out.println("Customer match found: " + c.getCustomerName());
+                    result = c;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Search bar to filter customer tasks
+     * @param actionEvent
+     */
+    public void onActionSearchCustomers(ActionEvent actionEvent) {
+        String search = customerSearchBar.getText();
+        Customer result = checkCustomerName();
+        ObservableList<Reconciliation> filterRecs = FXCollections.observableArrayList();
+       try {
+           if (result == null) {
+               Info.error("Search Error", "No results found for " + search);
+               refreshTable();
+           }
+           else {
+               for (Reconciliation r : allRecs) {
+                   System.out.println("r.getCustomer: " + r.getCustomer() + " result.getCustomerName: " + result.getCustomerName());
+
+                   if (r.getCustomer().equals(result.getCustomerName())) {
+                       Reconciliation match = r;
+                       filterRecs.add(match);
+                       System.out.println("match was added to filtered list");
+                   }else {
+                       System.out.println("Customer did not match");
+                   }
+               }
+               taskTableView.getItems().clear();
+               taskTableView.setItems(filterRecs);
+               }
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+
+    }
+
+    public void onActionSaveTask(ActionEvent actionEvent) {
+        String name = taskNameTF.getText();
+        String description = taskDescrTF.getText();
+        int customerID = customerCombo.getValue().getCustomerID();
+        LocalDate dueBy = dueByDatePicker.getValue();
+        ObservableList<Reconciliation> updatedList = DBReconciliation.getReconciliations();
+
+        if(taskNameTF.getText().isEmpty() || taskDescrTF.getText().isEmpty() || customerCombo.getSelectionModel().isEmpty() || dueByDatePicker.getValue() == null){
+            Info.error("Save Error", "Please enter a value into all field top save the task.");
+        }
+        else{
+            try{
+                String sql = "INSERT INTO RECONCILIATIONS(name, description, Due_By, Customer_ID) VALUES( ?, ?, ?, ?)";
+                PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+                ps.setString(1, name);
+                ps.setString(2, description);
+                ps.setDate(3, Date.valueOf(dueBy));
+                ps.setInt(4, customerID);
+
+                System.out.println(ps);
+                clearValues();
+                refreshTable();
+
+                int insertSuccess = ps.executeUpdate();
+                if (insertSuccess > 0) {
+                    System.out.println("reconciliation insertion successful");
+                } else {
+                    System.out.println("reconciliation insertion failed");
+                }
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        refreshTable();
+    }
+
+    private void clearValues(){
+        taskNameTF.clear();
+        taskDescrTF.clear();
+        customerCombo.getSelectionModel().clearSelection();
+        dueByDatePicker.setValue(null);
+        System.out.println("Values cleared after task was saved.");
+    }
+    private void refreshTable(){
+        allRecs.removeAll();
+        allRecs = DBReconciliation.getReconciliations();
+        taskTableView.setItems(allRecs);
+        System.out.println("Table has been updated with new insert");
+    }
+
+    public void onActionDeleteTask(ActionEvent actionEvent) {
+
+        if(taskTableView.getSelectionModel().getSelectedItem() != null){
+            Reconciliation completeRec = (Reconciliation) taskTableView.getSelectionModel().getSelectedItem();
+            int recID = completeRec.getID();
+            String recName = completeRec.getName();
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Customer Task");
+            alert.setHeaderText("Do you want to complete " + recName + "?");
+            Optional<ButtonType> action = alert.showAndWait();
+
+            if(action.get() == ButtonType.OK){
+                completeTask(recID);
+                allRecs.removeAll();
+                allRecs = DBReconciliation.getReconciliations();
+                taskTableView.setItems(allRecs);
+
+            } else {
+                System.out.println("Action canceled"); }
+        }
+        else {
+            Info.error("Complete Task", "Nothing selected. \n Please select a task to complete");
+        }
+    }
+
+    public void completeTask (int recID){
+
+        try{
+            String sql = "DELETE FROM RECONCILIATIONS WHERE RECONCILIATION_ID = ?";
+            PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
+            ps.setInt(1, recID);
+            ps.executeUpdate();
+            System.out.println("Reconciliation " + recID + " removed from system.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }
