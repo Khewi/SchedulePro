@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="userCombobox" prefHeight="621.0" prefWidth="683.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
+<AnchorPane fx:id="userCombobox" prefHeight="527.0" prefWidth="686.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
    <children>
-      <VBox layoutX="-2.0" prefHeight="621.0" prefWidth="174.0" style="-fx-background-color: #D4F1F4;">
+      <VBox layoutX="-2.0" prefHeight="566.0" prefWidth="176.0" style="-fx-background-color: #D4F1F4;">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule Pro">
                <font>
@@ -46,11 +46,11 @@
                   <Font name="System Bold" size="12.0" />
                </font>
                <VBox.margin>
-                  <Insets top="500.0" />
+                  <Insets top="423.0" />
                </VBox.margin>
             </Button>
          </children></VBox>
-      <TableView fx:id="appointmentTable" layoutX="182.0" layoutY="76.0" prefHeight="135.0" prefWidth="476.0">
+      <TableView fx:id="appointmentTable" layoutX="182.0" layoutY="51.0" prefHeight="135.0" prefWidth="476.0">
         <columns>
           <TableColumn fx:id="appIDCol" prefWidth="51.0" text="App ID" />
           <TableColumn fx:id="titleCol" prefWidth="99.0" text="Title" />
@@ -60,13 +60,13 @@
             <TableColumn fx:id="endCol" prefWidth="81.0" text="End" />
         </columns>
       </TableView>
-      <TextField fx:id="contactSearchBar" layoutX="500.0" layoutY="43.0" onAction="#onActionSearchContacts" promptText="Enter Contact Name" />
-      <Text layoutX="185.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Daily Appointment Schedule" wrappingWidth="317.619140625">
+      <TextField fx:id="contactSearchBar" layoutX="500.0" layoutY="16.0" onAction="#onActionSearchContacts" promptText="Enter Contact Name" />
+      <Text layoutX="183.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Daily Appointment Schedule" wrappingWidth="317.619140625">
          <font>
             <Font name="System Bold" size="22.0" />
          </font>
       </Text>
-      <TableView fx:id="taskTableView" layoutX="182.0" layoutY="269.0" prefHeight="135.0" prefWidth="476.0">
+      <TableView fx:id="taskTableView" layoutX="186.0" layoutY="227.0" prefHeight="135.0" prefWidth="476.0">
         <columns>
           <TableColumn fx:id="taskNameCol" prefWidth="75.0" text="Name" />
           <TableColumn fx:id="taskDescrCol" prefWidth="200.0" text="Description" />
@@ -74,13 +74,13 @@
             <TableColumn fx:id="taskDueByCol" prefWidth="100.0" text="Due By" />
         </columns>
       </TableView>
-      <Text layoutX="185.0" layoutY="254.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Tasks">
+      <Text layoutX="189.0" layoutY="218.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Tasks">
          <font>
             <Font name="System Bold" size="22.0" />
          </font>
       </Text>
-      <TextField fx:id="customerSearchBar" layoutX="500.0" layoutY="236.0" onAction="#onActionSearchCustomers" promptText="Enter Customer Name" />
-      <GridPane layoutX="247.0" layoutY="471.0" prefHeight="120.0" prefWidth="347.0">
+      <TextField fx:id="customerSearchBar" layoutX="500.0" layoutY="197.0" onAction="#onActionSearchCustomers" promptText="Enter Customer Name" />
+      <GridPane layoutX="247.0" layoutY="406.0" prefHeight="120.0" prefWidth="347.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" prefWidth="132.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="10.0" prefWidth="215.0" />
@@ -114,12 +114,12 @@
                </font></Text>
          </children>
       </GridPane>
-      <Text layoutX="189.0" layoutY="457.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Task">
+      <Text layoutX="189.0" layoutY="401.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Task">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Text>
-      <Button fx:id="saveButton" layoutX="586.0" layoutY="603.0" mnemonicParsing="false" onAction="#onActionSaveTask" text="SAVE" />
-      <Button fx:id="completeTaskButton" layoutX="549.0" layoutY="412.0" mnemonicParsing="false" onAction="#onActionDeleteTask" text="Complete Task" />
+      <Button fx:id="saveButton" layoutX="552.0" layoutY="531.0" mnemonicParsing="false" onAction="#onActionSaveTask" text="SAVE" />
+      <Button fx:id="completeTaskButton" layoutX="549.0" layoutY="371.0" mnemonicParsing="false" onAction="#onActionDeleteTask" text="Complete Task" />
    </children>
 </AnchorPane>

@@ -2,6 +2,7 @@ package controller;
 
 import DAO.DBCustomers;
 import DAO.DBAppointments;
+import DAO.DBReconciliation;
 import database.DBConnection;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,6 +16,7 @@ import javafx.stage.Stage;
 import model.Appointment;
 import model.Customer;
 import model.Info;
+import model.Reconciliation;
 
 import java.io.IOException;
 import java.net.URL;
@@ -172,6 +174,7 @@ public class CustomersController implements Initializable {
     public void onActionDeleteCustomer(ActionEvent actionEvent) {
         if (customerTable.getSelectionModel().getSelectedItem() != null) {
             ObservableList<Appointment> allAppsCheck = DBAppointments.getAllApps();
+            ObservableList<Reconciliation> allRecsCheck = DBReconciliation.getReconciliations();
             Customer deleteCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
             int cusId = deleteCustomer.getCustomerID();
             String custName = deleteCustomer.getCustomerName();
@@ -189,7 +192,17 @@ public class CustomersController implements Initializable {
                         hasConflict.set(true);
                         Info.error("ERROR", "Unable to delete customer. There are still active appointments for this customer. Please delete all appointments for this customer before trying again.");
                         break;
-                    } else {
+                    }
+                    else if(app.getCustomerID() != cusId){
+                        for(Reconciliation rec : allRecsCheck){
+                            if (rec.getCustomer().equals(deleteCustomer.getCustomerName())){
+                                hasConflict.set(true);
+                                Info.error("ERROR", "Unable to delete customer. There are still active tasks for this customer. Please delete all tasks for this customer before trying again.");
+                                break;
+                            }
+                        }
+                    }
+                    else {
                         hasConflict.set(false);
                         try {
                             deleteCustomer(cusId);
